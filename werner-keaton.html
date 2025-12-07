@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>C21 - Werner KEATON</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <div>
+        <a href="orbat.html">ORBAT</a>
+        <a href="info.html">Informations</a>
+        <a href="arbo.html">Hiérarchie</a>
+      <a href="histo.html">Historique</a>
+      <a href="calendar.html">Calendrier</a>
+      <a href="shop.html">Magasin</a>
+      <a href="login.html">Connexion</a>
+      
+
+    </div>
+  </nav>
+</header>
+
+<main class="id-card">
+
+
+    <p><strong>Nom :</strong>
+<input type="text" placeholder="Écris ici">
+
+<p><strong>Groupe sanguin :</strong>
+<select name="bloodtype">
+<option>O+</option>
+<option>O-</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+</select>
+</p>
+
+
+<p><strong>Secteur de commandement :</strong>
+<select name="command_sector">
+<option>SECTCOM1 / 88MEU - 21th Co</option>
+</select>
+</p>
+
+
+<p><strong>Grade :</strong>
+<select id="grade_branch" name="grade_branch" onchange="updateGradeOptions()">
+<option value="">-- Sélectionner branche --</option>
+<option value="unicom">UNICOM</option>
+<option value="navy">NAVY</option>
+</select>
+
+
+<select id="grade_rank" name="grade_rank">
+<option value="">-- Sélectionner grade --</option>
+</select>
+</p>
+
+
+<p><strong>Élément :</strong> UNSCMC 88MEU 21ème Compagnie</p>
+<p><strong>Date d'expiration :</strong> <input type="date" name="expiration"></p>
+
+<p><strong>Numéro de série :</strong>
+<input type="text" placeholder="Écris ici">
+
+
+<p><strong>Numéro de service :</strong>
+<input type="text" placeholder="Écris ici">
+
+
+
+<p class="id-warning">Attempted use by non-authorized individual is a violation of Unified Earth Government Law Chapter 9, Section 31<br>
+If lost or damaged proceed immediately to an authorized personnel for reissuance</p>
+</main>
+
+
+<script>
+const grades = {
+unicom: [
+"Private","Private First Class","Lance Corporal","Corporal / Specialist","Sergeant","Staff Sergeant","Gunnery Sergeant","Master Sergeant","First Sergeant","Master Gunnery Sergeant","Sergeant Major","Second Lieutenant","First Lieutnant","Captain","Major","Lieutenant Colonel","Colonel","Brigadier General","Major General","Lieutenant General","General"
+],
+navy: [
+"Crewman recruit","Crewman Apprentice","Crewman","Petty officer 3rd class","Petty officer 2nd class","Petty officer 1st class","Chief Petty officer","Senior Chief Petty officer","Master Chief Petty officer","Command Master Chief Petty officer","Ensign","Lieutenant junior grade","Lieutenant","Lieutenant Commander","Commander","Captain","Rear Admiral","Vice Admiral","Admiral","Fleet Admiral"
+]
+};
+
+
+function updateGradeOptions() {
+const branch = document.getElementById('grade_branch').value;
+const rankSelect = document.getElementById('grade_rank');
+rankSelect.innerHTML = '';
+rankSelect.appendChild(new Option('-- Sélectionner grade --',''));
+
+
+if (grades[branch]) {
+grades[branch].forEach(g => {
+rankSelect.appendChild(new Option(g,g));
+});
+}
+}
+</script>
+
+
+</body>
+</html>

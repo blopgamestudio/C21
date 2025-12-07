@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>C21 - ORBAT</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <div>
+        <a href="orbat.html">ORBAT</a>
+        <a href="info.html">Informations</a>
+        <a href="arbo.html">Hiérarchie</a>
+      <a href="histo.html">Historique</a>
+      <a href="calendar.html">Calendrier</a>
+      <a href="shop.html">Magasin</a>
+      <a href="login.html">Connexion</a>
+      
+      
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="card">
+    <h1>ORBAT - 21ème Compagnie</h1>
+    <ul>
+
+      <li>Tyr</li>
+
+<select name="characters" id="characters">
+  <option>- - -</option>
+  <option value="werner-keaton.html">Werner KEATON</option>
+  <option value="werner-hausser.html">Werner HAUSSER</option>
+</select>
+
+<script>
+  document.getElementById("characters").addEventListener("change", function () {
+    if (this.value !== "- - -") {
+      window.location.href = this.value;
+    }
+  });
+</script>
+
+
+      </select>
+
+  <li>Larry STONE</li>
+  <li>Lanya MILEVIC</li>
+  <li>Dmitri DRACHENBERG</li>
+  <li>James Kendricks</li>
+  <li>Edwarg Goultard</li>
+  <li>John KOLLER</li>
+  <li>Lilou DELACOUR</li>
+  <li>Chris MARASS</li>
+  <li>Jonathan DAVIS</li>
+  <li>Ivan SERGUEI</li>
+  <li>James RACKAM</li>
+  <li>Arcturus BLITZ</li>
+  <li>Corin Ashen</li>
+  <li>Alex REAPER</li>
+  <li>Alex SCOTT</li>
+  <li>Kylian Karza</li>
+  <li>Wellan SMARAGD</li>
+  <li>William COOPER</li>
+  <li>Nick REYES</li>
+  <li>Richard VREST</li>
+  <li>Allen SWOFFORD</li>
+  <li>Marcus KEYES</li>
+  <li>Tobias ALAN</li>
+  <li>Sven FISKER</li>
+  <li>Iris Andrès</li>
+  <li>Alexei Mikhailov</li>
+  <li>Adam Kelkov</li>
+  <li>Magie Delacarte</li>
+  <li>Guillaume Hue</li>
+  <li>Kaz Miller</li>
+  <li>Swann CURTIS</li>
+    </ul>
+  </div>
+</main>
+
+</body>
+</html>
