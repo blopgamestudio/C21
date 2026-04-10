@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C21 Hclick - Opération TakeDown</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: url("") center/cover no-repeat fixed;
+      min-height: 100vh;
+      color: rgb(71, 250, 11);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgb(1, 3, 3);
+      backdrop-filter: blur(3px);
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 1200px;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .game {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgb(5, 4, 3);
+      border: 1px solid rgb(20, 232, 59);
+      box-shadow: 0 0 20px rgb(16, 211, 13);
+      border-radius: 18px;
+      padding: 22px;
+    }
+
+    h1 {
+      font-size: 32px;
+      color: #23a11c;
+      margin-bottom: 10px;
+      text-shadow: 0 0 12px rgb(18, 237, 58);
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #23a11c;
+      margin-bottom: 12px;
+      text-shadow: 0 0 10px rgb(18, 237, 58);
+    }
+
+    .subtitle {
+      color: #23a11c;
+      margin-bottom: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .stat {
+      background: rgb(45, 87, 38);
+      border: 1px solid rgb(40, 190, 29);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 14px;
+      color: #0cf920;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      font-size: 24px;
+      color: #0fe824;
+    }
+
+    .main-button {
+      width: 100%;
+      height: 220px;
+      border-radius: 20px;
+      border: 1px solid rgb(62, 254, 32);
+      background: radial-gradient(circle at center, rgb(46, 91, 19), rgb(75, 148, 77));
+      color: rgb(18, 232, 22);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 25px rgb(17, 250, 21);
+      margin-bottom: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-button:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgb(44, 255, 33);
+    }
+
+    .main-button:active {
+      transform: scale(0.98);
+    }
+
+    .log {
+      min-height: 55px;
+      color: #23a11c;
+      font-size: 15px;
+      padding: 10px 0;
+    }
+
+    .campaign-box {
+      margin-bottom: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgb(24, 48, 21);
+      border: 1px solid rgb(20, 232, 59);
+    }
+
+    .campaign-title {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: #8dff7f;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 18px;
+      background: rgb(12, 24, 10);
+      border: 1px solid rgb(18, 237, 58);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgb(35, 161, 28), rgb(106, 255, 97));
+      box-shadow: 0 0 12px rgb(18, 237, 58);
+      transition: width 0.25s ease;
+    }
+
+    .campaign-text {
+      font-size: 14px;
+      color: #9bff94;
+    }
+
+    .shop-title {
+      font-size: 24px;
+      color: #23a11c;
+      margin-bottom: 14px;
+    }
+
+    .shop {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 740px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .shop-item {
+      background: rgb(46, 111, 46);
+      border: 1px solid rgb(13, 74, 8);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .shop-item h3 {
+      font-size: 18px;
+      color: rgb(176, 255, 163);
+      margin-bottom: 6px;
+    }
+
+    .shop-item p {
+      font-size: 14px;
+      color: rgb(37, 217, 73);
+    }
+
+    .shop-item button {
+      min-width: 160px;
+      padding: 12px 14px;
+      border: none;
+      border-radius: 10px;
+      background: rgb(53, 133, 67);
+      color: #012;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .shop-item button:hover {
+      filter: brightness(1.1);
+    }
+
+    .shop-item button:disabled {
+      background: rgb(61, 73, 63);
+      color: rgb(141, 162, 145);
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    .footer-stats {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #00ff04;
+      line-height: 1.8;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .secondary-btn {
+      padding: 10px 14px;
+      border: 1px solid rgb(20, 232, 59);
+      border-radius: 10px;
+      background: rgb(20, 35, 20);
+      color: #0cf920;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .secondary-btn:hover {
+      box-shadow: 0 0 12px rgb(16, 211, 13);
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .medals-list,
+    .events-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 320px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .medal-card {
+      background: rgb(37, 73, 31);
+      border: 1px solid rgb(18, 237, 58);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 0 10px rgba(18, 237, 58, 0.15);
+    }
+
+    .medal-card strong {
+      color: #b6ffb0;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .medal-card span {
+      color: #76f96b;
+      font-size: 14px;
+    }
+
+    .event-card {
+      background: rgb(21, 40, 17);
+      border-left: 4px solid rgb(18, 237, 58);
+      border-radius: 10px;
+      padding: 12px;
+      color: #9eff96;
+      font-size: 14px;
+    }
+
+    .floating-text {
+      position: fixed;
+      pointer-events: none;
+      color: #7CFF5B;
+      font-weight: bold;
+      font-size: 22px;
+      text-shadow: 0 0 8px rgb(44, 255, 33);
+      animation: floatUp 0.8s ease-out forwards;
+      z-index: 9999;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-40px) scale(1.2);
+      }
+    }
+
+    @media (max-width: 950px) {
+      .game,
+      .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .main-button {
+        height: 180px;
+      }
+
+      .shop-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .shop-item button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrapper">
+    <div class="game">
+      <div class="panel">
+        <h1>Opération TakeDown</h1>
+        <div class="subtitle">Centre de Commandement C21 // Collecte de ressources stratégiques</div>
+
+        <div class="campaign-box">
+          <div class="campaign-title" id="campaignName">Campagne actuelle : Escarmouche périphérique</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="campaignProgress"></div>
+          </div>
+          <div class="campaign-text" id="campaignText">0 / 500 crédits requis</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>Crédits UNSC</span>
+            <strong id="credits">0</strong>
+          </div>
+          <div class="stat">
+            <span>Production / sec</span>
+            <strong id="cps">0</strong>
+          </div>
+          <div class="stat">
+            <span>Puissance du clic</span>
+            <strong id="clickPower">1</strong>
+          </div>
+          <div class="stat">
+            <span>Niveau technologique</span>
+            <strong id="techLevel">1</strong>
+          </div>
+          <div class="stat">
+            <span>Total gagné</span>
+            <strong id="totalCredits">0</strong>
+          </div>
+          <div class="stat">
+            <span>Victoires Covenant</span>
+            <strong id="victoriesCount">0</strong>
+          </div>
+        </div>
+
+        <button class="main-button" id="mainClick">
+          RÉCOLTER L'ÉNERGIE
+        </button>
+
+        <div class="log" id="log">Initialisation du système Halo...</div>
+
+        <div class="footer-stats">
+          Marines : <span id="marinesCount">0</span><br>
+          ODST : <span id="odstCount">0</span><br>
+          Drones : <span id="dronesCount">0</span><br>
+          Tourelles : <span id="turretsCount">0</span><br>
+          Warthogs : <span id="warthogsCount">0</span><br>
+          Frégates : <span id="frigatesCount">0</span><br>
+          IA tactiques : <span id="aiCount">0</span><br>
+          Spartans : <span id="spartansCount">0</span>
+        </div>
+
+        <div class="controls">
+          <button class="secondary-btn" onclick="saveGame()">Sauvegarder</button>
+          <button class="secondary-btn" onclick="resetGame()">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="shop-title">Armurerie / Production</div>
+        <div class="shop">
+          <div class="shop-item">
+            <div>
+              <h3>Marine</h3>
+              <p>+1 crédit / sec</p>
+            </div>
+            <button id="marineBtn" onclick="buyUpgrade('marine')">Acheter (<span id="marineCost">10</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>ODST</h3>
+              <p>+3 crédits / sec</p>
+            </div>
+            <button id="odstBtn" onclick="buyUpgrade('odst')">Acheter (<span id="odstCost">25</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Drone de collecte</h3>
+              <p>+5 crédits / sec</p>
+            </div>
+            <button id="droneBtn" onclick="buyUpgrade('drone')">Acheter (<span id="droneCost">50</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Tourelle automatisée</h3>
+              <p>+15 crédits / sec</p>
+            </div>
+            <button id="turretBtn" onclick="buyUpgrade('turret')">Acheter (<span id="turretCost">150</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Warthog</h3>
+              <p>+35 crédits / sec</p>
+            </div>
+            <button id="warthogBtn" onclick="buyUpgrade('warthog')">Acheter (<span id="warthogCost">350</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Frégate UNSC</h3>
+              <p>+80 crédits / sec</p>
+            </div>
+            <button id="frigateBtn" onclick="buyUpgrade('frigate')">Acheter (<span id="frigateCost">800</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>IA tactique</h3>
+              <p>+150 crédits / sec</p>
+            </div>
+            <button id="aiBtn" onclick="buyUpgrade('ai')">Acheter (<span id="aiCost">1500</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Spartan-II</h3>
+              <p>+300 crédits / sec</p>
+            </div>
+            <button id="spartanUnitBtn" onclick="buyUpgrade('spartanUnit')">Acheter (<span id="spartanUnitCost">3500</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Amélioration Spartan</h3>
+              <p>+1 puissance de clic</p>
+            </div>
+            <button id="spartanBtn" onclick="buyUpgrade('spartan')">Acheter (<span id="spartanCost">100</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Tech Forerunner</h3>
+              <p>+1 niveau technologique</p>
+            </div>
+            <button id="forerunnerBtn" onclick="buyUpgrade('forerunner')">Acheter (<span id="forerunnerCost">300</span>)</button>
+          </div>
+
+          <div class="shop-item">
+            <div>
+              <h3>Réseau de commandement</h3>
+              <p>+20% de production globale</p>
+            </div>
+            <button id="commandBtn" onclick="buyUpgrade('command')">Acheter (<span id="commandCost">2500</span>)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="panel">
+        <h2>Médailles</h2>
+        <div class="medals-list" id="medalsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Journal de guerre</h2>
+        <div class="events-list" id="eventsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const campaignSteps = [
+      { name: "Escarmouche périphérique", target: 500, reward: "Médaille de Reconnaissance", text: "Une petite force Covenant a été repoussée." },
+      { name: "Défense de colonie", target: 3000, reward: "Médaille de Défense Coloniale", text: "Les lignes UNSC tiennent malgré les assauts." },
+      { name: "Percée orbitale", target: 12000, reward: "Médaille de Percée Orbitale", text: "Une flotte ennemie a été brisée en orbite." },
+      { name: "Contre-offensive tactique", target: 50000, reward: "Croix de l'Avant-Garde", text: "Les Spartans mènent une contre-offensive dévastatrice." },
+      { name: "Siège de verre rompu", target: 150000, reward: "Insigne de Survie Héroïque", text: "La planète cible résiste au protocole de destruction Covenant." },
+      { name: "Victoire stratégique majeure", target: 500000, reward: "Médaille du Haut Commandement", text: "Le commandement annonce une victoire majeure contre le Covenant." },
+      { name: "Annihilation de flotte ennemie", target: 1500000, reward: "Étoile de Guerre C21", text: "La flotte Covenant locale a été annihilée." }
+    ];
+
+    const medalsDefinitions = [
+      { id: "firstClick", name: "Premier Contact", desc: "Récolter tes premiers crédits." },
+      { id: "firstMarine", name: "Recrutement Initial", desc: "Acheter un premier Marine." },
+      { id: "firstVictory", name: "Victoire Locale", desc: "Remporter une première victoire contre le Covenant." },
+      { id: "tenUnits", name: "Escouade Renforcée", desc: "Atteindre 10 unités." },
+      { id: "fiftyUnits", name: "Force de Frappe", desc: "Atteindre 50 unités." },
+      { id: "bigIncome", name: "Industrie de Guerre", desc: "Dépasser 1 000 crédits par seconde." },
+      { id: "highTech", name: "Ingénierie Forerunner", desc: "Atteindre le niveau technologique 10." },
+      { id: "spartanRise", name: "Programme Spartan", desc: "Déployer un Spartan-II." }
+    ];
+
+    const defaultGame = {
+      credits: 0,
+      totalCredits: 0,
+      clickPower: 1,
+      techLevel: 1,
+      commandLevel: 0,
+      victories: 0,
+      currentCampaign: 0,
+      marines: 0,
+      odst: 0,
+      drones: 0,
+      turrets: 0,
+      warthogs: 0,
+      frigates: 0,
+      ai: 0,
+      spartans: 0,
+      medals: [],
+      events: [],
+      costs: {
+        marine: 10,
+        odst: 25,
+        drone: 50,
+        turret: 150,
+        warthog: 350,
+        frigate: 800,
+        ai: 1500,
+        spartanUnit: 3500,
+        spartan: 100,
+        forerunner: 300,
+        command: 2500
+      }
+    };
+
+    let game = JSON.parse(JSON.stringify(defaultGame));
+
+    function formatNumber(num) {
+      return Math.floor(num).toLocaleString("fr-FR");
+    }
+
+    function getTotalUnits() {
+      return game.marines + game.odst + game.drones + game.turrets + game.warthogs + game.frigates + game.ai + game.spartans;
+    }
+
+    function getBaseCps() {
+      return (
+        game.marines * 1 +
+        game.odst * 3 +
+        game.drones * 5 +
+        game.turrets * 15 +
+        game.warthogs * 35 +
+        game.frigates * 80 +
+        game.ai * 150 +
+        game.spartans * 300
+      );
+    }
+
+    function getCps() {
+      const globalBonus = 1 + (game.commandLevel * 0.20);
+      return Math.floor(getBaseCps() * game.techLevel * globalBonus);
+    }
+
+    function setLog(text) {
+      document.getElementById("log").textContent = text;
+    }
+
+    function addEvent(text) {
+      const now = new Date();
+      const time = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      game.events.unshift("[" + time + "] " + text);
+      if (game.events.length > 25) game.events.pop();
+      renderEvents();
+    }
+
+    function renderEvents() {
+      const list = document.getElementById("eventsList");
+      list.innerHTML = "";
+
+      if (game.events.length === 0) {
+        list.innerHTML = `<div class="event-card">Aucun événement de guerre pour le moment.</div>`;
+        return;
+      }
+
+      game.events.forEach(eventText => {
+        const div = document.createElement("div");
+        div.className = "event-card";
+        div.textContent = eventText;
+        list.appendChild(div);
+      });
+    }
+
+    function unlockMedal(id) {
+      if (game.medals.includes(id)) return;
+
+      const medal = medalsDefinitions.find(m => m.id === id);
+      if (!medal) return;
+
+      game.medals.push(id);
+      addEvent("Nouvelle médaille obtenue : " + medal.name);
+      renderMedals();
+    }
+
+    function renderMedals() {
+      const list = document.getElementById("medalsList");
+      list.innerHTML = "";
+
+      if (game.medals.length === 0) {
+        list.innerHTML = `<div class="medal-card"><strong>Aucune médaille</strong><span>Continue la campagne pour débloquer des récompenses.</span></div>`;
+        return;
+      }
+
+      game.medals.forEach(id => {
+        const medal = medalsDefinitions.find(m => m.id === id);
+        if (!medal) return;
+
+        const div = document.createElement("div");
+        div.className = "medal-card";
+        div.innerHTML = `<strong>${medal.name}</strong><span>${medal.desc}</span>`;
+        list.appendChild(div);
+      });
+    }
+
+    function addCredits(amount) {
+      game.credits += amount;
+      game.totalCredits += amount;
+    }
+
+    function createFloatingText(x, y, value) {
+      const text = document.createElement("div");
+      text.className = "floating-text";
+      text.textContent = "+" + formatNumber(value);
+      text.style.left = x + "px";
+      text.style.top = y + "px";
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 800);
+    }
+
+    function increaseCost(type, multiplier) {
+      game.costs[type] = Math.floor(game.costs[type] * multiplier);
+    }
+
+    function updateButtons() {
+      const items = ["marine", "odst", "drone", "turret", "warthog", "frigate", "ai", "spartanUnit", "spartan", "forerunner", "command"];
+      items.forEach(type => {
+        const btn = document.getElementById(type + "Btn");
+        if (btn) btn.disabled = game.credits < game.costs[type];
+      });
+    }
+
+    function updateCampaignUI() {
+      const step = campaignSteps[Math.min(game.currentCampaign, campaignSteps.length - 1)];
+      const progress = Math.min((game.totalCredits / step.target) * 100, 100);
+
+      document.getElementById("campaignName").textContent = "Campagne actuelle : " + step.name;
+      document.getElementById("campaignText").textContent = formatNumber(game.totalCredits) + " / " + formatNumber(step.target) + " crédits requis";
+      document.getElementById("campaignProgress").style.width = progress + "%";
+    }
+
+    function updateUI() {
+      document.getElementById("credits").textContent = formatNumber(game.credits);
+      document.getElementById("cps").textContent = formatNumber(getCps());
+      document.getElementById("clickPower").textContent = formatNumber(game.clickPower);
+      document.getElementById("techLevel").textContent = formatNumber(game.techLevel);
+      document.getElementById("totalCredits").textContent = formatNumber(game.totalCredits);
+      document.getElementById("victoriesCount").textContent = formatNumber(game.victories);
+
+      document.getElementById("marinesCount").textContent = game.marines;
+      document.getElementById("odstCount").textContent = game.odst;
+      document.getElementById("dronesCount").textContent = game.drones;
+      document.getElementById("turretsCount").textContent = game.turrets;
+      document.getElementById("warthogsCount").textContent = game.warthogs;
+      document.getElementById("frigatesCount").textContent = game.frigates;
+      document.getElementById("aiCount").textContent = game.ai;
+      document.getElementById("spartansCount").textContent = game.spartans;
+
+      document.getElementById("marineCost").textContent = formatNumber(game.costs.marine);
+      document.getElementById("odstCost").textContent = formatNumber(game.costs.odst);
+      document.getElementById("droneCost").textContent = formatNumber(game.costs.drone);
+      document.getElementById("turretCost").textContent = formatNumber(game.costs.turret);
+      document.getElementById("warthogCost").textContent = formatNumber(game.costs.warthog);
+      document.getElementById("frigateCost").textContent = formatNumber(game.costs.frigate);
+      document.getElementById("aiCost").textContent = formatNumber(game.costs.ai);
+      document.getElementById("spartanUnitCost").textContent = formatNumber(game.costs.spartanUnit);
+      document.getElementById("spartanCost").textContent = formatNumber(game.costs.spartan);
+      document.getElementById("forerunnerCost").textContent = formatNumber(game.costs.forerunner);
+      document.getElementById("commandCost").textContent = formatNumber(game.costs.command);
+
+      updateButtons();
+      updateCampaignUI();
+      renderEvents();
+      renderMedals();
+      checkAchievements();
+      checkCampaignProgress();
+    }
+
+    function checkAchievements() {
+      if (game.totalCredits > 0) unlockMedal("firstClick");
+      if (game.marines >= 1) unlockMedal("firstMarine");
+      if (game.victories >= 1) unlockMedal("firstVictory");
+      if (getTotalUnits() >= 10) unlockMedal("tenUnits");
+      if (getTotalUnits() >= 50) unlockMedal("fiftyUnits");
+      if (getCps() >= 1000) unlockMedal("bigIncome");
+      if (game.techLevel >= 10) unlockMedal("highTech");
+      if (game.spartans >= 1) unlockMedal("spartanRise");
+    }
+
+    function checkCampaignProgress() {
+      while (game.currentCampaign < campaignSteps.length && game.totalCredits >= campaignSteps[game.currentCampaign].target) {
+        const step = campaignSteps[game.currentCampaign];
+        game.victories++;
+        addEvent("Victoire contre le Covenant : " + step.text);
+        addEvent("Récompense obtenue : " + step.reward);
+        game.currentCampaign++;
+        setLog("Nouvelle victoire militaire remportée.");
+      }
+    }
+
+    function buyUpgrade(type) {
+      if (game.credits < game.costs[type]) {
+        setLog("Crédits insuffisants.");
+        return;
+      }
+
+      game.credits -= game.costs[type];
+
+      if (type === "marine") {
+        game.marines++;
+        increaseCost("marine", 1.15);
+        setLog("Marine déployé.");
+        addEvent("Un Marine supplémentaire rejoint les forces UNSC.");
+      }
+
+      if (type === "odst") {
+        game.odst++;
+        increaseCost("odst", 1.16);
+        setLog("ODST largué en zone hostile.");
+        addEvent("Une escouade ODST est déployée en insertion rapide.");
+      }
+
+      if (type === "drone") {
+        game.drones++;
+        increaseCost("drone", 1.18);
+        setLog("Drone de collecte activé.");
+        addEvent("Un drone augmente la récupération des ressources.");
+      }
+
+      if (type === "turret") {
+        game.turrets++;
+        increaseCost("turret", 1.22);
+        setLog("Tourelle automatisée installée.");
+        addEvent("Une nouvelle ligne défensive est en place.");
+      }
+
+      if (type === "warthog") {
+        game.warthogs++;
+        increaseCost("warthog", 1.24);
+        setLog("Warthog prêt au combat.");
+        addEvent("Un Warthog patrouille désormais dans le secteur.");
+      }
+
+      if (type === "frigate") {
+        game.frigates++;
+        increaseCost("frigate", 1.25);
+        setLog("Frégate UNSC déployée.");
+        addEvent("Une frégate UNSC entre dans l'orbite de combat.");
+      }
+
+      if (type === "ai") {
+        game.ai++;
+        increaseCost("ai", 1.30);
+        setLog("IA tactique synchronisée.");
+        addEvent("Une IA tactique optimise toute la chaîne de production.");
+      }
+
+      if (type === "spartanUnit") {
+        game.spartans++;
+        increaseCost("spartanUnit", 1.35);
+        setLog("Spartan-II déployé.");
+        addEvent("Un Spartan-II vient renforcer les lignes UNSC.");
+      }
+
+      if (type === "spartan") {
+        game.clickPower++;
+        increaseCost("spartan", 1.60);
+        setLog("Amélioration Spartan appliquée.");
+        addEvent("La puissance de collecte individuelle a été augmentée.");
+      }
+
+      if (type === "forerunner") {
+        game.techLevel++;
+        increaseCost("forerunner", 1.80);
+        setLog("Technologie Forerunner intégrée.");
+        addEvent("Une avancée technologique majeure améliore toute l'armée.");
+      }
+
+      if (type === "command") {
+        game.commandLevel++;
+        increaseCost("command", 1.75);
+        setLog("Réseau de commandement amélioré.");
+        addEvent("Le haut commandement améliore la coordination globale des forces.");
+      }
+
+      updateUI();
+      saveGame(false);
+    }
+
+    document.getElementById("mainClick").addEventListener("click", (e) => {
+      const gain = game.clickPower * game.techLevel;
+      addCredits(gain);
+      setLog("Énergie récupérée avec succès.");
+      createFloatingText(e.clientX, e.clientY, gain);
+      updateUI();
+    });
+
+    function saveGame(showMessage = true) {
+      localStorage.setItem("c21HaloClickSaveV2", JSON.stringify(game));
+      if (showMessage) setLog("Sauvegarde effectuée.");
+    }
+
+    function loadGame() {
+      const save = localStorage.getItem("c21HaloClickSaveV2");
+      if (!save) {
+        addEvent("Début de l'opération TakeDown.");
+        return;
+      }
+
+      const parsed = JSON.parse(save);
+      game = {
+        ...JSON.parse(JSON.stringify(defaultGame)),
+        ...parsed,
+        costs: {
+          ...defaultGame.costs,
+          ...(parsed.costs || {})
+        },
+        medals: parsed.medals || [],
+        events: parsed.events || []
+      };
+
+      setLog("Sauvegarde chargée.");
+    }
+
+    function resetGame() {
+      const confirmReset = confirm("Tu veux vraiment réinitialiser la campagne ?");
+      if (!confirmReset) return;
+
+      game = JSON.parse(JSON.stringify(defaultGame));
+      localStorage.removeItem("c21HaloClickSaveV2");
+      addEvent("Nouvelle campagne lancée.");
+      setLog("Campagne réinitialisée.");
+      updateUI();
+    }
+
+    setInterval(() => {
+      const passiveGain = getCps() / 10;
+      addCredits(passiveGain);
+      updateUI();
+    }, 100);
+
+    setInterval(() => {
+      saveGame(false);
+    }, 5000);
+
+    loadGame();
+    updateUI();
+  </script>
+</body>
+</html>
