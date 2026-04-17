@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C21 Hclick</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #020402;
+      min-height: 100vh;
+      color: rgb(71, 250, 11);
+      padding: 24px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(33, 105, 24, 0.15), transparent 30%),
+        linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.85));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 1400px;
+      max-width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .grid-top {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+    }
+
+    .panel {
+      background: rgb(5, 4, 3);
+      border: 1px solid rgb(20, 232, 59);
+      box-shadow: 0 0 18px rgba(16, 211, 13, 0.35);
+      border-radius: 18px;
+      padding: 20px;
+    }
+
+    h1, h2, h3 {
+      color: #23a11c;
+      text-shadow: 0 0 10px rgb(18, 237, 58);
+    }
+
+    h1 { font-size: 30px; margin-bottom: 10px; }
+    h2 { font-size: 22px; margin-bottom: 12px; }
+    h3 { font-size: 17px; margin-bottom: 6px; }
+
+    .subtitle {
+      color: #56d448;
+      margin-bottom: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      background: rgb(34, 69, 29);
+      border: 1px solid rgb(40, 190, 29);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 13px;
+      color: #87ff7c;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      font-size: 22px;
+      color: #0fe824;
+    }
+
+    .main-button {
+      width: 100%;
+      height: 180px;
+      border-radius: 18px;
+      border: 1px solid rgb(62, 254, 32);
+      background: radial-gradient(circle at center, rgb(8, 15, 4), rgb(71, 117, 73));
+      color: rgb(18, 232, 22);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 25px rgb(17, 250, 21);
+      margin-bottom: 14px;
+    }
+
+    .main-button:hover { transform: scale(1.01); }
+    .main-button:active { transform: scale(0.98); }
+
+    .log {
+      min-height: 42px;
+      color: #62ff5c;
+      font-size: 15px;
+      margin-bottom: 14px;
+    }
+
+    .campaign-box, .boss-box {
+      background: rgb(18, 37, 15);
+      border: 1px solid rgb(20, 232, 59);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 16px;
+      background: rgb(9, 16, 8);
+      border: 1px solid rgb(18, 237, 58);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgb(35, 161, 28), rgb(140, 255, 130));
+      transition: width 0.2s ease;
+    }
+
+    .boss-fill {
+      background: linear-gradient(90deg, rgb(163, 226, 14), rgb(57, 255, 20));
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .scroll-area {
+      max-height: 700px;
+      overflow-y: auto;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .shop-item, .card {
+      background: rgb(6, 29, 6);
+      border: 1px solid rgb(13, 74, 8);
+      border-radius: 14px;
+      padding: 14px;
+    }
+
+    .shop-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .shop-item p, .card p {
+      font-size: 14px;
+      color: rgb(0, 0, 0);
+      line-height: 1.4;
+    }
+
+    .shop-item small, .card small {
+      display: block;
+      margin-top: 5px;
+      color: #f9f9f9;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      background: rgb(41, 108, 53);
+      color: #021;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover { filter: brightness(1.08); }
+    button:disabled {
+      background: rgb(66, 76, 68);
+      color: rgb(132, 149, 134);
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    .buy-btn {
+      min-width: 170px;
+      padding: 12px 14px;
+    }
+
+    .secondary-btn {
+      padding: 10px 14px;
+      border: 1px solid rgb(20, 232, 59);
+      background: rgb(17, 35, 14);
+      color: #8dff7f;
+    }
+
+    .footer-stats {
+      margin-top: 16px;
+      color: #90ff88;
+      line-height: 1.8;
+      columns: 2;
+      column-gap: 20px;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .event-card, .achievement-card, .talent-card {
+      background: rgb(21, 40, 17);
+      border-left: 4px solid rgb(18, 237, 58);
+      border-radius: 10px;
+      padding: 12px;
+      color: #9eff96;
+      font-size: 14px;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.5;
+      border-left-color: #5d745b;
+    }
+
+    .talent-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .talent-card button {
+      margin-top: 10px;
+      padding: 10px 12px;
+      width: 100%;
+    }
+
+    .section-note {
+      color: #80d97c;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .floating-text {
+      position: fixed;
+      pointer-events: none;
+      color: #7CFF5B;
+      font-weight: bold;
+      font-size: 22px;
+      text-shadow: 0 0 8px rgb(44, 255, 33);
+      animation: floatUp 0.8s ease-out forwards;
+      z-index: 9999;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.15); }
+    }
+
+    @media (max-width: 1100px) {
+      .grid-top, .bottom-grid, .two-col, .talent-grid {
+        grid-template-columns: 1fr;
+      }
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .shop-item {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .buy-btn {
+        width: 100%;
+      }
+      .footer-stats {
+        columns: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrapper">
+    <div class="grid-top">
+      <div class="panel">
+        <h1>Opération TakeDown!</h1>
+        <div class="subtitle">Commandement C21</div>
+
+        <div class="campaign-box">
+          <h3 id="campaignName">Palier actuel</h3>
+          <div class="progress-bar">
+            <div class="progress-fill" id="campaignFill"></div>
+          </div>
+          <div id="campaignText">0 / 1000</div>
+        </div>
+
+        <div class="boss-box">
+          <h3 id="bossName">Boss actuel : aucun contact majeur</h3>
+          <div class="progress-bar">
+            <div class="progress-fill boss-fill" id="bossFill"></div>
+          </div>
+          <div id="bossText">En attente d'un boss</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <span>Crédits UNSC</span>
+            <strong id="credits">0</strong>
+          </div>
+          <div class="stat">
+            <span>Production / sec</span>
+            <strong id="cps">0</strong>
+          </div>
+          <div class="stat">
+            <span>Puissance clic</span>
+            <strong id="clickPower">1</strong>
+          </div>
+          <div class="stat">
+            <span>Niveau techno</span>
+            <strong id="techLevel">1</strong>
+          </div>
+          <div class="stat">
+            <span>Victoires</span>
+            <strong id="victories">0</strong>
+          </div>
+          <div class="stat">
+            <span>Talents</span>
+            <strong id="talentPoints">0</strong>
+          </div>
+          <div class="stat">
+            <span>Total gagné</span>
+            <strong id="totalCredits">0</strong>
+          </div>
+          <div class="stat">
+            <span>Événements subis</span>
+            <strong id="eventsCount">0</strong>
+          </div>
+          <div class="stat">
+            <span>Boss vaincus</span>
+            <strong id="bossesDefeated">0</strong>
+          </div>
+        </div>
+
+        <button class="main-button" id="mainClick">RÉCOLTER L'ÉNERGIE</button>
+        <div class="log" id="log">Initialisation du réseau militaire C21...</div>
+
+        <div class="footer-stats" id="unitsSummary"></div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <button class="secondary-btn" onclick="saveGame()">Sauvegarder</button>
+          <button class="secondary-btn" onclick="resetGame()">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="two-col">
+          <div>
+            <h2>Unités</h2>
+            <div class="section-note">Chaque achat augmente le coût de l'unité suivante.</div>
+            <div class="scroll-area" id="unitsShop"></div>
+          </div>
+          <div>
+            <h2>Améliorations</h2>
+            <div class="section-note">Les upgrades montent aussi en prix et renforcent l'ensemble de l'effort de guerre.</div>
+            <div class="scroll-area" id="upgradesShop"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="panel">
+        <h2>Hauts faits</h2>
+        <div class="scroll-area" id="achievementsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Journal de guerre</h2>
+        <div class="scroll-area" id="eventsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Arbre de talents</h2>
+        <div class="section-note" id="talentUnlockText">Débloque l'arbre au palier 3.</div>
+        <div class="talent-grid" id="talentTree"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const unitDefs = [
+      { id: "marine", name: "Marine", baseCost: 10, growth: 1.15, cps: 1, desc: "+1 crédit / sec" },
+      { id: "hellbringer", name: "Hellbringer", baseCost: 25, growth: 1.16, cps: 3, desc: "+3 crédits / sec" },
+      { id: "odst", name: "ODST", baseCost: 50, growth: 1.17, cps: 6, desc: "+6 crédits / sec" },
+      { id: "drone", name: "Drone de collecte", baseCost: 90, growth: 1.18, cps: 10, desc: "+10 crédits / sec" },
+      { id: "turret", name: "Tourelle automatisée", baseCost: 160, growth: 1.19, cps: 18, desc: "+18 crédits / sec" },
+      { id: "warthog", name: "Warthog", baseCost: 300, growth: 1.20, cps: 30, desc: "+30 crédits / sec" },
+      { id: "elephant", name: "Elephant", baseCost: 700, growth: 1.21, cps: 65, desc: "+65 crédits / sec" },
+      { id: "wolverine", name: "Wolverine", baseCost: 1200, growth: 1.22, cps: 105, desc: "+105 crédits / sec" },
+      { id: "cougar", name: "Cougar", baseCost: 1800, growth: 1.23, cps: 150, desc: "+150 crédits / sec" },
+      { id: "scorpion", name: "Scorpion", baseCost: 3000, growth: 1.24, cps: 240, desc: "+240 crédits / sec" },
+      { id: "hornet", name: "Hornet", baseCost: 4500, growth: 1.25, cps: 360, desc: "+360 crédits / sec" },
+      { id: "pelican", name: "Pelican", baseCost: 7000, growth: 1.26, cps: 520, desc: "+520 crédits / sec" },
+      { id: "longsword", name: "Longsword", baseCost: 11000, growth: 1.27, cps: 760, desc: "+760 crédits / sec" },
+      { id: "gladius", name: "Gladius Corvette", baseCost: 18000, growth: 1.28, cps: 1100, desc: "+1100 crédits / sec" },
+      { id: "stalwart", name: "Frégate Stalwart UNSC", baseCost: 32000, growth: 1.29, cps: 1650, desc: "+1650 crédits / sec" },
+      { id: "marathon", name: "Marathon Croiseur", baseCost: 60000, growth: 1.30, cps: 2500, desc: "+2500 crédits / sec" },
+      { id: "spartan2", name: "Spartan II", baseCost: 120000, growth: 1.32, cps: 4500, desc: "+4500 crédits / sec" }
+    ];
+
+    const upgradeDefs = [
+      { id: "drill", name: "Foreuse portative", baseCost: 60, growth: 1.50, effect: "click", value: 1, desc: "+1 puissance de clic" },
+      { id: "excavation", name: "Poste d'excavation", baseCost: 180, growth: 1.55, effect: "globalMult", value: 0.08, desc: "+8% production globale" },
+      { id: "forerunner", name: "Tech Forerunner", baseCost: 350, growth: 1.70, effect: "tech", value: 1, desc: "+1 niveau technologique" },
+      { id: "br55", name: "Cargaison de BR55", baseCost: 500, growth: 1.65, effect: "infantryMult", value: 0.15, desc: "+15% unités d'infanterie" },
+      { id: "cyberesp", name: "Cyber espionnage interplanétaire", baseCost: 1200, growth: 1.75, effect: "eventLuck", value: 0.10, desc: "Événements favorables plus fréquents" },
+      { id: "mothership", name: "Cargaison du vaisseau mère", baseCost: 2200, growth: 1.80, effect: "globalFlat", value: 100, desc: "+100 crédits / sec plats" },
+      { id: "spartanUpgrade", name: "Amélioration Spartan", baseCost: 3000, growth: 1.85, effect: "click", value: 5, desc: "+5 puissance de clic" },
+      { id: "commandNet", name: "Réseau de commandement", baseCost: 4500, growth: 1.90, effect: "globalMult", value: 0.20, desc: "+20% production globale" },
+      { id: "tacticalAI", name: "IA tactic", baseCost: 7000, growth: 2.00, effect: "bossDmg", value: 0.20, desc: "+20% dégâts contre les boss" },
+      { id: "smartAI", name: "IA intelligente", baseCost: 15000, growth: 2.10, effect: "globalMult", value: 0.35, desc: "+35% production globale" }
+    ];
+
+    const campaignSteps = [
+      { target: 1000, name: "Avant-poste menacé", reward: 1 },
+      { target: 5000, name: "Raid sur colonie externe", reward: 1 },
+      { target: 18000, name: "Percée logistique", reward: 2 },
+      { target: 60000, name: "FSU activée", reward: 2 },
+      { target: 180000, name: "FAU déployée", reward: 3 },
+      { target: 600000, name: "Contre-offensive de théâtre", reward: 3 },
+      { target: 1800000, name: "Supériorité régionale", reward: 4 },
+      { target: 5000000, name: "Nettoyage orbital", reward: 4 },
+      { target: 12000000, name: "Brèche stratégique", reward: 5 },
+      { target: 30000000, name: "Victoire d'ampleur sectorielle", reward: 5 }
+    ];
+
+    const bossDefs = [
+      { id: "jackal", name: "Capitaine Jackal", threshold: 5000, hp: 5000, reward: 800 },
+      { id: "brute", name: "Chef Brute", threshold: 60000, hp: 45000, reward: 7000 },
+      { id: "scarab", name: "Scarab d'assaut", threshold: 600000, hp: 350000, reward: 65000 },
+      { id: "carrier", name: "Destroyer Covenant", threshold: 5000000, hp: 2600000, reward: 700000 },
+      { id: "prophet", name: "Hiérarque renégat", threshold: 25000000, hp: 12000000, reward: 3000000 }
+    ];
+
+    const achievementDefs = [
+      { id: "click1", name: "Premier contact", desc: "Générer tes premiers crédits.", check: g => g.totalCredits >= 1 },
+      { id: "units10", name: "Petit détachement", desc: "Construire 10 unités.", check: g => getTotalUnits(g) >= 10 },
+      { id: "units50", name: "Force de frappe", desc: "Construire 50 unités.", check: g => getTotalUnits(g) >= 50 },
+      { id: "units150", name: "Armée de théâtre", desc: "Construire 150 unités.", check: g => getTotalUnits(g) >= 150 },
+      { id: "marine25", name: "Compagnie marine", desc: "Avoir 25 Marines.", check: g => g.units.marine >= 25 },
+      { id: "odst20", name: "Chute orbitale massive", desc: "Avoir 20 ODST.", check: g => g.units.odst >= 20 },
+      { id: "tank10", name: "Colonne blindée", desc: "Avoir 10 Scorpions.", check: g => g.units.scorpion >= 10 },
+      { id: "air15", name: "Maîtrise du ciel", desc: "Avoir 15 Hornets.", check: g => g.units.hornet >= 15 },
+      { id: "spartan1", name: "Programme relancé", desc: "Déployer un Spartan II.", check: g => g.units.spartan2 >= 1 },
+      { id: "cps1000", name: "Chaîne industrielle", desc: "Atteindre 1000 crédits / sec.", check: g => getCps(g) >= 1000 },
+      { id: "cps10000", name: "Économie de guerre", desc: "Atteindre 10000 crédits / sec.", check: g => getCps(g) >= 10000 },
+      { id: "boss1", name: "Tueur de boss", desc: "Vaincre un boss.", check: g => g.bossesDefeated >= 1 },
+      { id: "victory5", name: "Campagne solide", desc: "Atteindre 5 paliers.", check: g => g.victories >= 5 },
+      { id: "tech10", name: "Héritage Forerunner", desc: "Atteindre le niveau technologique 10.", check: g => g.techLevel >= 10 }
+    ];
+
+    const talentDefs = [
+      { id: "recruitment", name: "Recrutement", tier: 1, unlockVictory: 3, cost: 1, desc: "+10% production globale", effect: { globalMult: 0.10 } },
+      { id: "fsu_fantassin", name: "FSU / Fantassin", tier: 2, unlockVictory: 4, cost: 1, desc: "+20% infanterie", effect: { infantryMult: 0.20 } },
+      { id: "fsu_appuis", name: "FSU / Appuis", tier: 2, unlockVictory: 4, cost: 1, desc: "+20% véhicules lourds", effect: { heavyMult: 0.20 } },
+      { id: "fsu_support", name: "FSU / Support", tier: 2, unlockVictory: 4, cost: 1, desc: "+15% production globale", effect: { globalMult: 0.15 } },
+      { id: "fsu_medic", name: "FSU / Médic", tier: 2, unlockVictory: 4, cost: 1, desc: "-15% dégâts des événements négatifs", effect: { eventResist: 0.15 } },
+      { id: "fau_fantassin", name: "FAU / Fantassin", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% infanterie", effect: { infantryMult: 0.35 } },
+      { id: "fau_appuis", name: "FAU / Appuis", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% véhicules lourds", effect: { heavyMult: 0.35 } },
+      { id: "fau_support", name: "FAU / Support", tier: 3, unlockVictory: 5, cost: 2, desc: "+25% production globale", effect: { globalMult: 0.25 } },
+      { id: "fau_medic", name: "FAU / Médic", tier: 3, unlockVictory: 5, cost: 2, desc: "+25% chance d'événement favorable", effect: { eventLuck: 0.25 } }
+    ];
+
+    const infantryUnits = ["marine", "hellbringer", "odst", "spartan2"];
+    const heavyUnits = ["warthog", "elephant", "wolverine", "cougar", "scorpion", "hornet", "pelican", "longsword", "gladius", "stalwart", "marathon"];
+
+    function makeDefaultState() {
+      const units = {};
+      const unitCosts = {};
+      unitDefs.forEach(u => {
+        units[u.id] = 0;
+        unitCosts[u.id] = u.baseCost;
+      });
+
+      const upgradeLevels = {};
+      const upgradeCosts = {};
+      upgradeDefs.forEach(u => {
+        upgradeLevels[u.id] = 0;
+        upgradeCosts[u.id] = u.baseCost;
+      });
+
+      const talents = {};
+      talentDefs.forEach(t => talents[t.id] = 0);
+
+      return {
+        credits: 0,
+        totalCredits: 0,
+        clickPower: 1,
+        techLevel: 1,
+        victories: 0,
+        currentCampaign: 0,
+        bossesDefeated: 0,
+        randomEventsTriggered: 0,
+        units,
+        unitCosts,
+        upgradeLevels,
+        upgradeCosts,
+        achievements: [],
+        events: [],
+        talentPoints: 0,
+        talents,
+        activeBoss: null,
+        upgradeEffects: {
+          globalMult: 0,
+          infantryMult: 0,
+          heavyMult: 0,
+          globalFlat: 0,
+          bossDmg: 0,
+          eventLuck: 0,
+          eventResist: 0
+        }
+      };
+    }
+
+    let game = makeDefaultState();
+
+    function formatNumber(num) {
+      return Math.floor(num).toLocaleString("fr-FR");
+    }
+
+    function setLog(text) {
+      document.getElementById("log").textContent = text;
+    }
+
+    function getTotalUnits(g = game) {
+      return Object.values(g.units).reduce((a, b) => a + b, 0);
+    }
+
+    function getTalentBonus(g = game, key) {
+      let total = 0;
+      talentDefs.forEach(t => {
+        if (g.talents[t.id] > 0 && t.effect[key]) total += t.effect[key];
+      });
+      return total;
+    }
+
+    function getUpgradeBonus(g = game, key) {
+      return g.upgradeEffects[key] || 0;
+    }
+
+    function getUnitCps(unitId, g = game) {
+      const def = unitDefs.find(u => u.id === unitId);
+      if (!def) return 0;
+
+      let mult = 1;
+      if (infantryUnits.includes(unitId)) mult += getUpgradeBonus(g, "infantryMult") + getTalentBonus(g, "infantryMult");
+      if (heavyUnits.includes(unitId)) mult += getTalentBonus(g, "heavyMult");
+      return def.cps * mult;
+    }
+
+    function getBaseCps(g = game) {
+      let total = 0;
+      unitDefs.forEach(unit => {
+        total += g.units[unit.id] * getUnitCps(unit.id, g);
+      });
+      return total;
+    }
+
+    function getCps(g = game) {
+      const globalMult = 1 + getUpgradeBonus(g, "globalMult") + getTalentBonus(g, "globalMult");
+      return Math.floor((getBaseCps(g) + getUpgradeBonus(g, "globalFlat")) * g.techLevel * globalMult);
+    }
+
+    function getBossDamagePerSecond(g = game) {
+      return Math.max(1, Math.floor(getCps(g) * (0.04 + getUpgradeBonus(g, "bossDmg"))));
+    }
+
+    function createFloatingText(x, y, value) {
+      const text = document.createElement("div");
+      text.className = "floating-text";
+      text.textContent = "+" + formatNumber(value);
+      text.style.left = x + "px";
+      text.style.top = y + "px";
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 800);
+    }
+
+    function addCredits(amount) {
+      game.credits += amount;
+      game.totalCredits += amount;
+    }
+
+    function addEvent(text) {
+      const now = new Date();
+      const time = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      game.events.unshift("[" + time + "] " + text);
+      if (game.events.length > 40) game.events.pop();
+      renderEvents();
+    }
+
+    function unlockAchievement(id) {
+      if (game.achievements.includes(id)) return;
+      game.achievements.push(id);
+      const def = achievementDefs.find(a => a.id === id);
+      if (def) addEvent("Haut fait débloqué : " + def.name);
+      renderAchievements();
+    }
+
+    function checkAchievements() {
+      achievementDefs.forEach(a => {
+        if (!game.achievements.includes(a.id) && a.check(game)) unlockAchievement(a.id);
+      });
+    }
+
+    function renderEvents() {
+      const list = document.getElementById("eventsList");
+      list.innerHTML = "";
+      if (game.events.length === 0) {
+        list.innerHTML = `<div class="event-card">Aucun rapport pour le moment.</div>`;
+        return;
+      }
+      game.events.forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "event-card";
+        div.textContent = entry;
+        list.appendChild(div);
+      });
+    }
+
+    function renderAchievements() {
+      const list = document.getElementById("achievementsList");
+      list.innerHTML = "";
+      achievementDefs.forEach(a => {
+        const unlocked = game.achievements.includes(a.id);
+        const div = document.createElement("div");
+        div.className = "achievement-card" + (unlocked ? "" : " locked");
+        div.innerHTML = `<strong>${a.name}</strong><p>${a.desc}</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function renderUnitsShop() {
+      const container = document.getElementById("unitsShop");
+      container.innerHTML = "";
+      unitDefs.forEach(unit => {
+        const card = document.createElement("div");
+        card.className = "shop-item";
+        card.innerHTML = `
+          <div>
+            <h3>${unit.name}</h3>
+            <p>${unit.desc}</p>
+            <small>Possédé : <span id="owned_${unit.id}">0</span></small>
+          </div>
+          <button class="buy-btn" id="btn_unit_${unit.id}">Acheter (${formatNumber(game.unitCosts[unit.id])})</button>
+        `;
+        container.appendChild(card);
+        const btn = card.querySelector("button");
+        btn.onclick = () => buyUnit(unit.id);
+      });
+    }
+
+    function renderUpgradesShop() {
+      const container = document.getElementById("upgradesShop");
+      container.innerHTML = "";
+      upgradeDefs.forEach(upg => {
+        const card = document.createElement("div");
+        card.className = "shop-item";
+        card.innerHTML = `
+          <div>
+            <h3>${upg.name}</h3>
+            <p>${upg.desc}</p>
+            <small>Niveau : <span id="lvl_${upg.id}">0</span></small>
+          </div>
+          <button class="buy-btn" id="btn_upg_${upg.id}">Acheter (${formatNumber(game.upgradeCosts[upg.id])})</button>
+        `;
+        container.appendChild(card);
+        const btn = card.querySelector("button");
+        btn.onclick = () => buyUpgrade(upg.id);
+      });
+    }
+
+    function renderTalentTree() {
+      const container = document.getElementById("talentTree");
+      container.innerHTML = "";
+      const unlocked = game.victories >= 3;
+      document.getElementById("talentUnlockText").textContent = unlocked
+        ? "Arbre actif. Dépense tes points de talent pour spécialiser la C21."
+        : "Débloque l'arbre au palier 3.";
+
+      talentDefs.forEach(t => {
+        const canUnlock = game.victories >= t.unlockVictory;
+        const owned = game.talents[t.id] > 0;
+        const div = document.createElement("div");
+        div.className = "talent-card";
+        div.innerHTML = `
+          <strong>${t.name}</strong>
+          <p>${t.desc}</p>
+          <small>Tier ${t.tier} // Requiert palier ${t.unlockVictory} // Coût ${t.cost}</small>
+          <button ${(!canUnlock || owned || game.talentPoints < t.cost) ? "disabled" : ""}>
+            ${owned ? "Débloqué" : "Débloquer"}
+          </button>
+        `;
+        const btn = div.querySelector("button");
+        btn.onclick = () => buyTalent(t.id);
+        container.appendChild(div);
+      });
+    }
+
+    function renderUnitsSummary() {
+      const el = document.getElementById("unitsSummary");
+      let html = "";
+      unitDefs.forEach(unit => {
+        html += `${unit.name} : <span id="sum_${unit.id}">${game.units[unit.id]}</span><br>`;
+      });
+      el.innerHTML = html;
+    }
+
+    function updateCampaignUI() {
+      const stepIndex = Math.min(game.currentCampaign, campaignSteps.length - 1);
+      const step = campaignSteps[stepIndex];
+      const prevTarget = stepIndex === 0 ? 0 : campaignSteps[stepIndex - 1].target;
+      const currentProgress = Math.max(0, game.totalCredits - prevTarget);
+      const needed = step.target - prevTarget;
+      const pct = Math.max(0, Math.min(100, (currentProgress / needed) * 100));
+
+      document.getElementById("campaignName").textContent = "Palier actuel : " + step.name;
+      document.getElementById("campaignFill").style.width = pct + "%";
+      document.getElementById("campaignText").textContent =
+        formatNumber(currentProgress) + " / " + formatNumber(needed) + " crédits sur ce palier";
+    }
+
+    function updateBossUI() {
+      const nameEl = document.getElementById("bossName");
+      const fillEl = document.getElementById("bossFill");
+      const textEl = document.getElementById("bossText");
+
+      if (!game.activeBoss) {
+        nameEl.textContent = "Boss actuel : aucun contact majeur";
+        fillEl.style.width = "0%";
+        textEl.textContent = "En attente d'un boss";
+        return;
+      }
+
+      const pct = Math.max(0, Math.min(100, (game.activeBoss.hp / game.activeBoss.maxHp) * 100));
+      nameEl.textContent = "Boss actuel : " + game.activeBoss.name;
+      fillEl.style.width = pct + "%";
+      textEl.textContent = formatNumber(game.activeBoss.hp) + " / " + formatNumber(game.activeBoss.maxHp) + " PV";
+    }
+
+    function updateButtons() {
+      unitDefs.forEach(unit => {
+        const btn = document.getElementById("btn_unit_" + unit.id);
+        if (btn) {
+          btn.disabled = game.credits < game.unitCosts[unit.id];
+          btn.textContent = "Acheter (" + formatNumber(game.unitCosts[unit.id]) + ")";
+        }
+      });
+
+      upgradeDefs.forEach(upg => {
+        const btn = document.getElementById("btn_upg_" + upg.id);
+        if (btn) {
+          btn.disabled = game.credits < game.upgradeCosts[upg.id];
+          btn.textContent = "Acheter (" + formatNumber(game.upgradeCosts[upg.id]) + ")";
+        }
+      });
+    }
+
+    function updateSummaryNumbers() {
+      document.getElementById("credits").textContent = formatNumber(game.credits);
+      document.getElementById("cps").textContent = formatNumber(getCps());
+      document.getElementById("clickPower").textContent = formatNumber(game.clickPower);
+      document.getElementById("techLevel").textContent = formatNumber(game.techLevel);
+      document.getElementById("victories").textContent = formatNumber(game.victories);
+      document.getElementById("talentPoints").textContent = formatNumber(game.talentPoints);
+      document.getElementById("totalCredits").textContent = formatNumber(game.totalCredits);
+      document.getElementById("eventsCount").textContent = formatNumber(game.randomEventsTriggered);
+      document.getElementById("bossesDefeated").textContent = formatNumber(game.bossesDefeated);
+
+      unitDefs.forEach(unit => {
+        const owned = document.getElementById("owned_" + unit.id);
+        const sum = document.getElementById("sum_" + unit.id);
+        if (owned) owned.textContent = game.units[unit.id];
+        if (sum) sum.textContent = game.units[unit.id];
+      });
+
+      upgradeDefs.forEach(upg => {
+        const lvl = document.getElementById("lvl_" + upg.id);
+        if (lvl) lvl.textContent = game.upgradeLevels[upg.id];
+      });
+    }
+
+    function updateUI() {
+      updateSummaryNumbers();
+      updateButtons();
+      updateCampaignUI();
+      updateBossUI();
+      renderAchievements();
+      renderEvents();
+      renderTalentTree();
+      checkAchievements();
+      checkCampaignProgress();
+      checkBossSpawn();
+    }
+
+    function buyUnit(id) {
+      const def = unitDefs.find(u => u.id === id);
+      if (!def) return;
+      const cost = game.unitCosts[id];
+      if (game.credits < cost) {
+        setLog("Crédits insuffisants.");
+        return;
+      }
+
+      game.credits -= cost;
+      game.units[id]++;
+      game.unitCosts[id] = Math.floor(game.unitCosts[id] * def.growth);
+      setLog(def.name + " déployé.");
+      addEvent(def.name + " ajouté aux forces de la C21.");
+      updateUI();
+      saveGame(false);
+    }
+
+    function applyUpgradeEffect(def) {
+      if (def.effect === "click") game.clickPower += def.value;
+      if (def.effect === "tech") game.techLevel += def.value;
+      if (def.effect === "globalMult") game.upgradeEffects.globalMult += def.value;
+      if (def.effect === "infantryMult") game.upgradeEffects.infantryMult += def.value;
+      if (def.effect === "globalFlat") game.upgradeEffects.globalFlat += def.value;
+      if (def.effect === "bossDmg") game.upgradeEffects.bossDmg += def.value;
+      if (def.effect === "eventLuck") game.upgradeEffects.eventLuck += def.value;
+    }
+
+    function buyUpgrade(id) {
+      const def = upgradeDefs.find(u => u.id === id);
+      if (!def) return;
+
+      const cost = game.upgradeCosts[id];
+      if (game.credits < cost) {
+        setLog("Crédits insuffisants.");
+        return;
+      }
+
+      game.credits -= cost;
+      game.upgradeLevels[id]++;
+      applyUpgradeEffect(def);
+      game.upgradeCosts[id] = Math.floor(game.upgradeCosts[id] * def.growth);
+      setLog(def.name + " amélioré.");
+      addEvent("Upgrade appliqué : " + def.name);
+      updateUI();
+      saveGame(false);
+    }
+
+    function buyTalent(id) {
+      const def = talentDefs.find(t => t.id === id);
+      if (!def) return;
+      if (game.victories < def.unlockVictory) return;
+      if (game.talents[id] > 0) return;
+      if (game.talentPoints < def.cost) return;
+
+      game.talentPoints -= def.cost;
+      game.talents[id] = 1;
+      setLog("Talent débloqué : " + def.name);
+      addEvent("Spécialisation validée : " + def.name);
+      updateUI();
+      saveGame(false);
+    }
+
+    function checkCampaignProgress() {
+      while (
+        game.currentCampaign < campaignSteps.length &&
+        game.totalCredits >= campaignSteps[game.currentCampaign].target
+      ) {
+        const step = campaignSteps[game.currentCampaign];
+        game.currentCampaign++;
+        game.victories++;
+        game.talentPoints += step.reward;
+        setLog("Palier franchi : " + step.name);
+        addEvent("Victoire de campagne : " + step.name + " // +" + step.reward + " point(s) de talent");
+      }
+    }
+
+    function checkBossSpawn() {
+      if (game.activeBoss) return;
+
+      for (let i = 0; i < bossDefs.length; i++) {
+        const boss = bossDefs[i];
+        if (
+          game.totalCredits >= boss.threshold &&
+          game.bossesDefeated <= i
+        ) {
+          game.activeBoss = {
+            id: boss.id,
+            name: boss.name,
+            hp: boss.hp,
+            maxHp: boss.hp,
+            reward: boss.reward
+          };
+          addEvent("Alerte majeure : boss détecté // " + boss.name);
+          setLog("Boss détecté : " + boss.name);
+          break;
+        }
+      }
+    }
+
+    function tickBoss() {
+      if (!game.activeBoss) return;
+
+      const damage = getBossDamagePerSecond() / 10;
+      game.activeBoss.hp -= damage;
+
+      if (game.activeBoss.hp <= 0) {
+        const reward = game.activeBoss.reward;
+        addCredits(reward);
+        game.bossesDefeated++;
+        addEvent("Boss éliminé : " + game.activeBoss.name + " // récompense " + formatNumber(reward) + " crédits");
+        setLog("Boss vaincu.");
+        game.activeBoss = null;
+        updateUI();
+      }
+    }
+
+    function randomEventTick() {
+      const baseChance = 0.08;
+      const luck = getUpgradeBonus(game, "eventLuck") + getTalentBonus(game, "eventLuck");
+      const chance = baseChance + luck;
+
+      if (Math.random() > chance) return;
+
+      game.randomEventsTriggered++;
+
+      const events = [
+        {
+          type: "good",
+          action: () => {
+            const gain = Math.max(50, Math.floor(getCps() * 8));
+            addCredits(gain);
+            addEvent("Convoi de ravitaillement sécurisé // +" + formatNumber(gain) + " crédits");
+            setLog("Événement favorable.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            game.clickPower += 1;
+            addEvent("Prototype d'équipement récupéré // +1 puissance de clic");
+            setLog("Équipement récupéré.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            game.talentPoints += 1;
+            addEvent("Rapport stratégique exceptionnel // +1 point de talent");
+            setLog("Nouveau point de talent.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            const resist = getTalentBonus(game, "eventResist");
+            const lossFactor = Math.max(0.03, 0.12 - resist);
+            const loss = Math.floor(game.credits * lossFactor);
+            game.credits = Math.max(0, game.credits - loss);
+            addEvent("Raid Covenant sur la logistique // -" + formatNumber(loss) + " crédits");
+            setLog("Raid ennemi subi.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            const candidates = unitDefs.filter(u => game.units[u.id] > 0);
+            if (candidates.length === 0) {
+              addEvent("Sabotage détecté, mais aucun actif critique n'a été perdu.");
+              return;
+            }
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            game.units[pick.id] = Math.max(0, game.units[pick.id] - 1);
+            addEvent("Escarmouche violente // 1 " + pick.name + " perdu");
+            setLog("Perte au combat.");
+          }
+        }
+      ];
+
+      const event = events[Math.floor(Math.random() * events.length)];
+      event.action();
+      updateUI();
+    }
+
+    function passiveIncomeTick() {
+      const gain = getCps() / 10;
+      addCredits(gain);
+    }
+
+    document.getElementById("mainClick").addEventListener("click", (e) => {
+      const gain = game.clickPower * game.techLevel;
+      addCredits(gain);
+      createFloatingText(e.clientX, e.clientY, gain);
+      setLog("Énergie récupérée avec succès.");
+      updateUI();
+    });
+
+    function saveGame(showMessage = true) {
+      localStorage.setItem("c21HaloClickV3", JSON.stringify(game));
+      if (showMessage) setLog("Sauvegarde effectuée.");
+    }
+
+    function loadGame() {
+      const save = localStorage.getItem("c21HaloClickV3");
+      if (!save) {
+        addEvent("Démarrage d'une nouvelle campagne C21.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(save);
+        const fresh = makeDefaultState();
+
+        game = {
+          ...fresh,
+          ...parsed,
+          units: { ...fresh.units, ...(parsed.units || {}) },
+          unitCosts: { ...fresh.unitCosts, ...(parsed.unitCosts || {}) },
+          upgradeLevels: { ...fresh.upgradeLevels, ...(parsed.upgradeLevels || {}) },
+          upgradeCosts: { ...fresh.upgradeCosts, ...(parsed.upgradeCosts || {}) },
+          achievements: parsed.achievements || [],
+          events: parsed.events || [],
+          talents: { ...fresh.talents, ...(parsed.talents || {}) },
+          upgradeEffects: { ...fresh.upgradeEffects, ...(parsed.upgradeEffects || {}) }
+        };
+
+        setLog("Sauvegarde chargée.");
+      } catch (err) {
+        game = makeDefaultState();
+        addEvent("Erreur de chargement, nouvelle campagne lancée.");
+      }
+    }
+
+    function resetGame() {
+      const ok = confirm("Tu veux vraiment réinitialiser toute la campagne V3 ?");
+      if (!ok) return;
+      localStorage.removeItem("c21HaloClickV3");
+      game = makeDefaultState();
+      renderUnitsShop();
+      renderUpgradesShop();
+      renderUnitsSummary();
+      addEvent("Nouvelle campagne lancée.");
+      setLog("Campagne réinitialisée.");
+      updateUI();
+    }
+
+    renderUnitsShop();
+    renderUpgradesShop();
+    renderUnitsSummary();
+    loadGame();
+    updateUI();
+
+    setInterval(() => {
+      passiveIncomeTick();
+      tickBoss();
+      updateUI();
+    }, 100);
+
+    setInterval(() => {
+      randomEventTick();
+    }, 12000);
+
+    setInterval(() => {
+      saveGame(false);
+    }, 5000);
+  </script>
+</body>
+</html>
