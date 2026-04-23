@@ -68,7 +68,8 @@
       border-radius: 22px;
       padding: 20px;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
+      min-width: 0;
     }
 
     .panel::before {
@@ -194,17 +195,20 @@
 
     .two-col {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 20px;
+      min-width: 0;
     }
 
     .scroll-area {
       max-height: 700px;
       overflow-y: auto;
+      overflow-x: hidden;
       padding-right: 6px;
       display: flex;
       flex-direction: column;
       gap: 10px;
+      min-width: 0;
     }
 
     .shop-item, .card {
@@ -215,10 +219,18 @@
     }
 
     .shop-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+      min-width: 0;
+    }
+
+    .shop-item h3,
+    .shop-item p,
+    .shop-item small {
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
 
     .shop-item p, .card p {
@@ -254,7 +266,8 @@
     }
 
     .buy-btn {
-      min-width: 170px;
+      width: 100%;
+      min-width: 0;
       padding: 12px 14px;
     }
 
@@ -336,7 +349,7 @@
         grid-template-columns: repeat(2, 1fr);
       }
       .shop-item {
-        flex-direction: column;
+        grid-template-columns: 1fr;
         align-items: stretch;
       }
       .buy-btn {
