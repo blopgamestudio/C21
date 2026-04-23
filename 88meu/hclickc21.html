@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C21 Clicker - Discord Edition UNSC Gold</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(214, 169, 47, 0.18), transparent 32%),
+        radial-gradient(circle at 90% 15%, rgba(30, 70, 120, 0.22), transparent 28%),
+        linear-gradient(180deg, #070704, #101006 45%, #030302);
+      color: #f4d36a;
+      font-family: "Share Tech Mono", monospace;
+      letter-spacing: 0.35px;
+      overflow-x: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255,220,120,0.025) 0px,
+          rgba(255,220,120,0.025) 1px,
+          transparent 3px,
+          transparent 7px
+        ),
+        linear-gradient(90deg, rgba(0, 207, 255, 0.04), transparent 20%, rgba(0, 207, 255, 0.05));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      width: 1420px;
+      max-width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .grid-top {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .panel {
+      background: rgba(4, 8, 15, 0.92);
+      border: 1px solid #c49a22;
+      box-shadow:
+        0 0 18px rgba(214, 169, 47, 0.35),
+        inset 0 0 22px rgba(120, 88, 0, 0.24);
+      border-radius: 20px;
+      padding: 20px;
+      min-width: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.045), transparent 25%),
+        radial-gradient(circle at top right, rgba(214,169,47,0.12), transparent 35%);
+      pointer-events: none;
+    }
+
+    h1, h2, h3 {
+      font-family: "Orbitron", sans-serif;
+      color: #ffe08a;
+      text-shadow: 0 0 8px #d6a92f, 0 0 18px rgba(214, 169, 47, 0.6);
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 21px;
+      margin-bottom: 12px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #e8c45b;
+      margin-bottom: 18px;
+    }
+
+    .campaign-box, .boss-box {
+      background: rgba(18, 16, 7, 0.92);
+      border: 1px solid rgba(214, 169, 47, 0.75);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      min-width: 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 16px;
+      background: #050402;
+      border: 1px solid #d6a92f;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0;
+      box-shadow: inset 0 0 8px rgba(0,0,0,0.85);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6b4f00, #f0c64a, #fff1a8);
+      transition: width 0.2s ease;
+      box-shadow: 0 0 12px #d6a92f;
+    }
+
+    .boss-fill {
+      background: linear-gradient(90deg, #7a1f13, #e0a21e, #f0c64a);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+      min-width: 0;
+    }
+
+    .stat {
+      background: rgba(27, 24, 10, 0.88);
+      border: 1px solid rgba(214, 169, 47, 0.55);
+      border-radius: 14px;
+      padding: 12px;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .stat span {
+      display: block;
+      color: #f0ce69;
+      font-size: 13px;
+      margin-bottom: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .stat strong {
+      display: block;
+      color: #ffe8a3;
+      font-size: 22px;
+      font-family: "Orbitron", sans-serif;
+      text-shadow: 0 0 10px #d6a92f;
+      overflow-wrap: anywhere;
+    }
+
+    .main-button {
+      width: 100%;
+      height: 180px;
+      border-radius: 20px;
+      border: 1px solid #f0c64a;
+      background:
+        radial-gradient(circle at center, rgba(214, 169, 47, 0.25), transparent 30%),
+        linear-gradient(135deg, #100f07, #3b2d07 50%, #030302);
+      color: #fff0b8;
+      font-family: "Orbitron", sans-serif;
+      font-size: 28px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.15s;
+      box-shadow: 0 0 28px rgba(214, 169, 47, 0.62);
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+
+    .main-button:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 42px rgba(214, 169, 47, 0.9);
+    }
+
+    .main-button:active {
+      transform: scale(0.98);
+    }
+
+    .log {
+      min-height: 44px;
+      color: #ffe39a;
+      font-size: 15px;
+      margin-bottom: 14px;
+      text-shadow: 0 0 8px rgba(214, 169, 47, 0.8);
+      overflow-wrap: anywhere;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .scroll-area {
+      max-height: 700px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .shop-item, .card {
+      background: rgba(13, 12, 5, 0.96);
+      border: 1px solid rgba(214, 169, 47, 0.42);
+      border-radius: 15px;
+      padding: 14px;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .shop-item {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .shop-item p,
+    .card p,
+    .shop-item small,
+    .card small {
+      font-size: 14px;
+      color: #f0d37c;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .shop-item small,
+    .card small {
+      display: block;
+      margin-top: 5px;
+      color: #ffe8a3;
+    }
+
+    button {
+      border: none;
+      border-radius: 11px;
+      background: linear-gradient(135deg, #8a650e, #ffd66e);
+      color: #120d02;
+      font-family: "Orbitron", sans-serif;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    button:hover {
+      filter: brightness(1.1);
+    }
+
+    button:disabled {
+      background: #3e351b;
+      color: #9f8b50;
+      cursor: not-allowed;
+      filter: none;
+    }
+
+    .buy-btn {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 14px;
+      white-space: normal;
+      line-height: 1.25;
+    }
+
+    .secondary-btn {
+      padding: 10px 14px;
+      border: 1px solid #d6a92f;
+      background: #100e06;
+      color: #ffe3a1;
+    }
+
+    .footer-stats {
+      margin-top: 16px;
+      color: #f5d984;
+      line-height: 1.8;
+      columns: 2;
+      column-gap: 20px;
+      overflow-wrap: anywhere;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .event-card, .achievement-card, .talent-card {
+      background: rgba(18, 16, 7, 0.94);
+      border-left: 4px solid #d6a92f;
+      border-radius: 12px;
+      padding: 12px;
+      color: #ffe3a1;
+      font-size: 14px;
+      overflow: hidden;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.48;
+      border-left-color: #736334;
+    }
+
+    .talent-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .talent-card button {
+      margin-top: 10px;
+      padding: 10px 12px;
+      width: 100%;
+    }
+
+    .section-note {
+      color: #e8c45b;
+      font-size: 14px;
+      margin-bottom: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .floating-text {
+      position: fixed;
+      pointer-events: none;
+      color: #ffe8a3;
+      font-weight: bold;
+      font-size: 22px;
+      text-shadow: 0 0 8px #d6a92f;
+      animation: floatUp 0.8s ease-out forwards;
+      z-index: 9999;
+      font-family: "Orbitron", sans-serif;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-40px) scale(1.15); }
+    }
+
+
+    .panel,
+    .shop-item,
+    .event-card,
+    .achievement-card,
+    .talent-card,
+    .stat {
+      box-shadow:
+        0 0 14px rgba(214, 169, 47, 0.22),
+        inset 0 0 18px rgba(0, 0, 0, 0.55);
+    }
+
+    .grid-top > *,
+    .bottom-grid > *,
+    .two-col > *,
+    .talent-grid > * {
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    h1, h2, h3, p, small, span, strong, div, button {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .shop-item {
+      border-left: 4px solid #d6a92f;
+    }
+
+    .buy-btn,
+    .secondary-btn,
+    .main-button {
+      text-shadow: 0 0 5px rgba(0,0,0,0.8);
+    }
+
+    .scroll-area {
+      scrollbar-color: #d6a92f #090805;
+    }
+
+    @media (max-width: 1100px) {
+      .grid-top, .bottom-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .footer-stats {
+        columns: 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .main-button {
+        font-size: 22px;
+        height: 150px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+    /* ===== V5.2 CLEAN SHOP LAYOUT UNSC GOLD ===== */
+
+    .panel {
+      background: rgba(5, 6, 5, 0.94);
+      border: 1px solid rgba(214, 169, 47, 0.78);
+    }
+
+    .two-col {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      gap: 20px;
+    }
+
+    .scroll-area {
+      max-height: 700px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 8px;
+      gap: 12px;
+    }
+
+    .shop-item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 12px;
+      align-items: stretch;
+      min-height: 126px;
+      height: auto;
+      padding: 16px;
+      background:
+        linear-gradient(180deg, rgba(17, 15, 7, 0.98), rgba(6, 6, 3, 0.98));
+      border: 1px solid rgba(214, 169, 47, 0.72);
+      border-left: 4px solid #d6a92f;
+      border-radius: 16px;
+      box-shadow:
+        0 0 12px rgba(214, 169, 47, 0.18),
+        inset 0 0 18px rgba(0, 0, 0, 0.68);
+    }
+
+    .shop-item > div {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+      overflow: visible;
+    }
+
+    .shop-item h3 {
+      font-size: 18px;
+      line-height: 1.2;
+      color: #ffd86b;
+      text-shadow: 0 0 7px rgba(214, 169, 47, 0.95);
+      margin-bottom: 2px;
+      white-space: normal;
+      overflow: visible;
+    }
+
+    .shop-item p {
+      font-size: 14px;
+      line-height: 1.45;
+      color: #e8ca72;
+      white-space: normal;
+      overflow: visible;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .shop-item small {
+      font-size: 12px;
+      line-height: 1.35;
+      color: #fff0b8;
+      white-space: normal;
+      overflow: visible;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .buy-btn {
+      width: 100%;
+      min-height: 42px;
+      padding: 11px 14px;
+      font-size: 13px;
+      line-height: 1.25;
+      white-space: normal;
+      align-self: end;
+      background: linear-gradient(135deg, #3a2a05, #d6a92f);
+      color: #100b02;
+      border: 1px solid rgba(255, 224, 138, 0.45);
+      box-shadow: 0 0 10px rgba(214, 169, 47, 0.25);
+    }
+
+    .buy-btn:hover {
+      filter: brightness(1.12);
+      box-shadow: 0 0 15px rgba(214, 169, 47, 0.55);
+    }
+
+    .buy-btn:disabled {
+      background: #282313;
+      color: #887541;
+      border: 1px solid rgba(136, 117, 65, 0.35);
+      box-shadow: none;
+    }
+
+    .section-note {
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .footer-stats {
+      background: rgba(8, 8, 4, 0.72);
+      border: 1px solid rgba(214, 169, 47, 0.35);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    @media (max-width: 1250px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .grid-top,
+      .bottom-grid,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .shop-item {
+        min-height: auto;
+      }
+    }
+
+  
+    /* ===== V5.3 FIX DEFINITIF TEXTE + BOUTONS ===== */
+
+    .two-col {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .scroll-area {
+      max-height: 760px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .shop-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 12px;
+
+      min-height: unset;
+      height: auto;
+      max-height: none;
+
+      padding: 16px;
+      overflow: visible;
+
+      background:
+        linear-gradient(180deg, rgba(16, 14, 6, 0.98), rgba(5, 5, 3, 0.98));
+      border: 1px solid rgba(214, 169, 47, 0.75);
+      border-left: 4px solid #d6a92f;
+      border-radius: 16px;
+    }
+
+    .shop-item > div {
+      display: block;
+      height: auto;
+      max-height: none;
+      overflow: visible;
+      min-width: 0;
+    }
+
+    .shop-item h3 {
+      display: block;
+      font-size: 17px;
+      line-height: 1.18;
+      margin-bottom: 8px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .shop-item p {
+      display: block;
+      font-size: 13px;
+      line-height: 1.45;
+      margin-bottom: 8px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .shop-item small {
+      display: block;
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 6px;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      word-break: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .buy-btn {
+      display: block;
+      width: 100%;
+      min-height: 44px;
+      height: auto;
+      margin-top: 4px;
+      padding: 11px 12px;
+      font-size: 12px;
+      line-height: 1.25;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      flex-shrink: 0;
+    }
+
+    .panel,
+    .card,
+    .stat,
+    .campaign-box,
+    .boss-box {
+      min-width: 0;
+    }
+
+    .panel {
+      overflow: visible;
+    }
+
+    .grid-top > .panel,
+    .bottom-grid > .panel {
+      overflow: hidden;
+    }
+
+    .shop-item *,
+    .event-card *,
+    .achievement-card *,
+    .talent-card * {
+      max-width: 100%;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+    }
+
+    @media (max-width: 1350px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrapper">
+    <div class="grid-top">
+      <div class="panel">
+        <h1>Opération Discord Discipline</h1>
+        <div class="subtitle">C21 interne // terminal UNSC troll non homologué par Tyr</div>
+
+        <div class="campaign-box">
+          <h3 id="campaignName">Palier actuel</h3>
+          <div class="progress-bar"><div class="progress-fill" id="campaignFill"></div></div>
+          <div id="campaignText">0 / 1000</div>
+        </div>
+
+        <div class="boss-box">
+          <h3 id="bossName">Boss actuel : aucun drama détecté</h3>
+          <div class="progress-bar"><div class="progress-fill boss-fill" id="bossFill"></div></div>
+          <div id="bossText">En attente d'un problème administratif</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Crédits de discipline</span><strong id="credits">0</strong></div>
+          <div class="stat"><span>Discipline / sec</span><strong id="cps">0</strong></div>
+          <div class="stat"><span>Motivation clic</span><strong id="clickPower">1</strong></div>
+          <div class="stat"><span>Niveau d'ordre</span><strong id="techLevel">1</strong></div>
+          <div class="stat"><span>Briefings survivés</span><strong id="victories">0</strong></div>
+          <div class="stat"><span>Points doctrine</span><strong id="talentPoints">0</strong></div>
+          <div class="stat"><span>Total récolté</span><strong id="totalCredits">0</strong></div>
+          <div class="stat"><span>Blagues subies</span><strong id="eventsCount">0</strong></div>
+          <div class="stat"><span>Boss troll vaincus</span><strong id="bossesDefeated">0</strong></div>
+        </div>
+
+        <button class="main-button" id="mainClick">MOTIVER LES TROUPES</button>
+        <div class="log" id="log">Connexion au Discord C21... lecture des messages non lus...</div>
+
+        <div class="footer-stats" id="unitsSummary"></div>
+
+        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
+          <button class="secondary-btn" onclick="saveGame()">Sauvegarder</button>
+          <button class="secondary-btn" onclick="resetGame()">Réinitialiser</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="two-col">
+          <div>
+            <h2>Membres déployés</h2>
+            <div class="section-note">Chaque membre recruté augmente le prix du suivant. Tyr coûte cher car il observe en silence.</div>
+            <div class="scroll-area" id="unitsShop"></div>
+          </div>
+          <div>
+            <h2>Améliorations troll</h2>
+            <div class="section-note">Private jokes, discipline douteuse, slips C21 et prières au Grand Tyr.</div>
+            <div class="scroll-area" id="upgradesShop"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <div class="panel">
+        <h2>Hauts faits débiles</h2>
+        <div class="scroll-area" id="achievementsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Journal du chaos</h2>
+        <div class="scroll-area" id="eventsList"></div>
+      </div>
+
+      <div class="panel">
+        <h2>Doctrine C21</h2>
+        <div class="section-note" id="talentUnlockText">Débloque la doctrine au briefing 3.</div>
+        <div class="talent-grid" id="talentTree"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const unitDefs = [
+      { id: "drachenberg", name: "Drachenberg", baseCost: 10, growth: 1.15, cps: 1, desc: "+1 discipline / sec // démarre le serveur mentalement" },
+      { id: "stones", name: "Stones", baseCost: 25, growth: 1.16, cps: 3, desc: "+3 discipline / sec // solide comme son pseudo" },
+      { id: "coburn", name: "Coburn", baseCost: 50, growth: 1.17, cps: 6, desc: "+6 discipline / sec // génère aussi du bruit" },
+      { id: "karza", name: "Karza", baseCost: 100, growth: 1.18, cps: 12, desc: "+12 discipline / sec // fait un truc utile parfois" },
+      { id: "andres", name: "Andres", baseCost: 180, growth: 1.19, cps: 20, desc: "+20 discipline / sec // opérationnel en théorie" },
+      { id: "davis", name: "Davis", baseCost: 300, growth: 1.20, cps: 35, desc: "+35 discipline / sec // répond quand les planètes s'alignent" },
+      { id: "smaragd", name: "Smaragd", baseCost: 500, growth: 1.21, cps: 60, desc: "+60 discipline / sec // brille dans le chaos" },
+      { id: "brandt", name: "Brandt", baseCost: 900, growth: 1.22, cps: 110, desc: "+110 discipline / sec // mode sérieux approximatif" },
+      { id: "kelkov", name: "Kelkov", baseCost: 1500, growth: 1.23, cps: 180, desc: "+180 discipline / sec // logistique de l'ombre" },
+      { id: "serguei", name: "Serguei", baseCost: 2500, growth: 1.24, cps: 300, desc: "+300 discipline / sec // menace administrative douce" },
+      { id: "reaper", name: "Reaper", baseCost: 5000, growth: 1.26, cps: 550, desc: "+550 discipline / sec // quand il arrive, ça clique droit" },
+      { id: "tyr", name: "TYR, unité suprême", baseCost: 15000, growth: 1.30, cps: 1200, desc: "+1200 discipline / sec // le Grand Tyr regarde ton Discord" }
+    ];
+
+    const upgradeDefs = [
+      { id: "opDiscipline", name: "Discipline en OP", baseCost: 60, growth: 1.50, effect: "globalMult", value: 0.10, desc: "+10% discipline globale" },
+      { id: "prayTyr", name: "Prier le Grand Tyr", baseCost: 150, growth: 1.55, effect: "tech", value: 1, desc: "+1 niveau d'ordre" },
+      { id: "readDiscord", name: "Regarder son Discord régulièrement", baseCost: 300, growth: 1.60, effect: "globalMult", value: 0.15, desc: "+15% production globale, miracle rare" },
+      { id: "helmet", name: "Mettre son casque correctement", baseCost: 550, growth: 1.65, effect: "click", value: 2, desc: "+2 motivation par clic" },
+      { id: "slipC21", name: "Avoir un slip C21 officiel", baseCost: 900, growth: 1.70, effect: "globalFlat", value: 75, desc: "+75 discipline / sec par pur charisme" },
+      { id: "muteCoburn", name: "Mute Coburn 5 minutes", baseCost: 1400, growth: 1.75, effect: "eventResist", value: 0.15, desc: "-15% pertes des événements négatifs" },
+      { id: "everyonePing", name: "Ping @everyone pour rien", baseCost: 2200, growth: 1.80, effect: "eventLuck", value: 0.12, desc: "Plus de blagues positives, théoriquement" },
+      { id: "seriousDebrief", name: "Faire un débrief sérieux lol", baseCost: 3500, growth: 1.85, effect: "globalMult", value: 0.22, desc: "+22% discipline globale" },
+      { id: "rpFiveMinutes", name: "RP sérieux pendant 5 minutes", baseCost: 6000, growth: 1.95, effect: "memberMult", value: 0.30, desc: "+30% production des membres" },
+      { id: "adminCoffee", name: "Café administratif froid", baseCost: 9500, growth: 2.00, effect: "globalFlat", value: 350, desc: "+350 discipline / sec plats" },
+      { id: "tyrHappy", name: "Tyr est content", baseCost: 18000, growth: 2.15, effect: "bossDmg", value: 0.30, desc: "+30% dégâts contre les boss troll" },
+      { id: "blackOpsMeme", name: "Mème validé par l'état-major", baseCost: 32000, growth: 2.25, effect: "globalMult", value: 0.50, desc: "+50% production globale" }
+    ];
+
+    const campaignSteps = [
+      { target: 1000, name: "Premier briefing pas trop chaotique", reward: 1 },
+      { target: 5000, name: "Discord lu par trois personnes", reward: 1 },
+      { target: 18000, name: "Opération lancée à l'heure", reward: 2 },
+      { target: 60000, name: "Escouade presque disciplinée", reward: 2 },
+      { target: 180000, name: "Débrief sans hurlement", reward: 3 },
+      { target: 600000, name: "Serveur stable pendant 10 minutes", reward: 3 },
+      { target: 1800000, name: "Admin content, événement rare", reward: 4 },
+      { target: 5000000, name: "Tyr esquisse un sourire", reward: 4 },
+      { target: 12000000, name: "C21 officiellement ingérable", reward: 5 },
+      { target: 30000000, name: "Ascension du Grand Slip C21", reward: 5 }
+    ];
+
+    const bossDefs = [
+      { id: "briefing", name: "Briefing obligatoire à 21h", threshold: 5000, hp: 5000, reward: 800 },
+      { id: "coburnVocal", name: "Coburn en vocal ouvert", threshold: 60000, hp: 45000, reward: 7000 },
+      { id: "serverCrash", name: "Crash serveur bootcamp", threshold: 600000, hp: 350000, reward: 65000 },
+      { id: "adminMeeting", name: "Réunion administrative infinie", threshold: 5000000, hp: 2600000, reward: 700000 },
+      { id: "tyrInspection", name: "Inspection surprise de Tyr", threshold: 25000000, hp: 12000000, reward: 3000000 }
+    ];
+
+    const achievementDefs = [
+      { id: "click1", name: "Premier ordre donné", desc: "Générer ton premier crédit de discipline.", check: g => g.totalCredits >= 1 },
+      { id: "units10", name: "Petit vocal", desc: "Déployer 10 membres.", check: g => getTotalUnits(g) >= 10 },
+      { id: "units50", name: "Discord peuplé", desc: "Déployer 50 membres.", check: g => getTotalUnits(g) >= 50 },
+      { id: "units150", name: "Communauté incontrôlable", desc: "Déployer 150 membres.", check: g => getTotalUnits(g) >= 150 },
+      { id: "coburn25", name: "Trop de Coburn", desc: "Avoir 25 Coburn. Courage.", check: g => g.units.coburn >= 25 },
+      { id: "reaper10", name: "Fauche organisée", desc: "Avoir 10 Reaper.", check: g => g.units.reaper >= 10 },
+      { id: "tyr1", name: "Le Grand Tyr est là", desc: "Déployer Tyr.", check: g => g.units.tyr >= 1 },
+      { id: "cps1000", name: "Discipline industrielle", desc: "Atteindre 1000 discipline / sec.", check: g => getCps(g) >= 1000 },
+      { id: "cps10000", name: "Casernement turbo", desc: "Atteindre 10000 discipline / sec.", check: g => getCps(g) >= 10000 },
+      { id: "boss1", name: "Drama neutralisé", desc: "Vaincre un boss troll.", check: g => g.bossesDefeated >= 1 },
+      { id: "victory5", name: "Briefing survivant", desc: "Survivre à 5 briefings.", check: g => g.victories >= 5 },
+      { id: "tech10", name: "Ordre absolu", desc: "Atteindre le niveau d'ordre 10.", check: g => g.techLevel >= 10 },
+      { id: "slip", name: "Tenue réglementaire", desc: "Obtenir le slip C21.", check: g => g.upgradeLevels.slipC21 >= 1 },
+      { id: "tyrGod", name: "Tyr approuve peut-être", desc: "Posséder 5 Tyr. C'est illégal.", check: g => g.units.tyr >= 5 }
+    ];
+
+    const talentDefs = [
+      { id: "cadre", name: "Cadre un peu sérieux", tier: 1, unlockVictory: 3, cost: 1, desc: "+10% discipline globale", effect: { globalMult: 0.10 } },
+      { id: "discord", name: "Lecture Discord obligatoire", tier: 2, unlockVictory: 4, cost: 1, desc: "+20% membres", effect: { memberMult: 0.20 } },
+      { id: "brief", name: "Briefing carré", tier: 2, unlockVictory: 4, cost: 1, desc: "+15% production globale", effect: { globalMult: 0.15 } },
+      { id: "antiDrama", name: "Anti-drama administratif", tier: 2, unlockVictory: 4, cost: 1, desc: "-15% dégâts des events négatifs", effect: { eventResist: 0.15 } },
+      { id: "memeOps", name: "Meme Ops", tier: 2, unlockVictory: 4, cost: 1, desc: "+15% chance d'event favorable", effect: { eventLuck: 0.15 } },
+      { id: "tyrDoctrine", name: "Doctrine du Grand Tyr", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% production globale", effect: { globalMult: 0.35 } },
+      { id: "eliteVocal", name: "Vocal d'élite", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% membres", effect: { memberMult: 0.35 } },
+      { id: "silentAdmin", name: "Admin silencieux", tier: 3, unlockVictory: 5, cost: 2, desc: "+30% dégâts boss", effect: { bossDmg: 0.30 } },
+      { id: "slipLegend", name: "Slip C21 légendaire", tier: 3, unlockVictory: 5, cost: 2, desc: "+25% production globale", effect: { globalMult: 0.25 } }
+    ];
+
+    function makeDefaultState() {
+      const units = {};
+      const unitCosts = {};
+      unitDefs.forEach(u => {
+        units[u.id] = 0;
+        unitCosts[u.id] = u.baseCost;
+      });
+
+      const upgradeLevels = {};
+      const upgradeCosts = {};
+      upgradeDefs.forEach(u => {
+        upgradeLevels[u.id] = 0;
+        upgradeCosts[u.id] = u.baseCost;
+      });
+
+      const talents = {};
+      talentDefs.forEach(t => talents[t.id] = 0);
+
+      return {
+        credits: 0,
+        totalCredits: 0,
+        clickPower: 1,
+        techLevel: 1,
+        victories: 0,
+        currentCampaign: 0,
+        bossesDefeated: 0,
+        randomEventsTriggered: 0,
+        units,
+        unitCosts,
+        upgradeLevels,
+        upgradeCosts,
+        achievements: [],
+        events: [],
+        talentPoints: 0,
+        talents,
+        activeBoss: null,
+        upgradeEffects: {
+          globalMult: 0,
+          memberMult: 0,
+          globalFlat: 0,
+          bossDmg: 0,
+          eventLuck: 0,
+          eventResist: 0
+        }
+      };
+    }
+
+    let game = makeDefaultState();
+
+    function formatNumber(num) {
+      return Math.floor(num).toLocaleString("fr-FR");
+    }
+
+    function setLog(text) {
+      document.getElementById("log").textContent = text;
+    }
+
+    function getTotalUnits(g = game) {
+      return Object.values(g.units).reduce((a, b) => a + b, 0);
+    }
+
+    function getTalentBonus(g = game, key) {
+      let total = 0;
+      talentDefs.forEach(t => {
+        if (g.talents[t.id] > 0 && t.effect[key]) total += t.effect[key];
+      });
+      return total;
+    }
+
+    function getUpgradeBonus(g = game, key) {
+      return g.upgradeEffects[key] || 0;
+    }
+
+    function getUnitCps(unitId, g = game) {
+      const def = unitDefs.find(u => u.id === unitId);
+      if (!def) return 0;
+      let mult = 1 + getUpgradeBonus(g, "memberMult") + getTalentBonus(g, "memberMult");
+      return def.cps * mult;
+    }
+
+    function getBaseCps(g = game) {
+      let total = 0;
+      unitDefs.forEach(unit => {
+        total += g.units[unit.id] * getUnitCps(unit.id, g);
+      });
+      return total;
+    }
+
+    function getCps(g = game) {
+      const globalMult = 1 + getUpgradeBonus(g, "globalMult") + getTalentBonus(g, "globalMult");
+      return Math.floor((getBaseCps(g) + getUpgradeBonus(g, "globalFlat")) * g.techLevel * globalMult);
+    }
+
+    function getBossDamagePerSecond(g = game) {
+      return Math.max(1, Math.floor(getCps(g) * (0.04 + getUpgradeBonus(g, "bossDmg") + getTalentBonus(g, "bossDmg"))));
+    }
+
+    function createFloatingText(x, y, value) {
+      const text = document.createElement("div");
+      text.className = "floating-text";
+      text.textContent = "+" + formatNumber(value);
+      text.style.left = x + "px";
+      text.style.top = y + "px";
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 800);
+    }
+
+    function addCredits(amount) {
+      game.credits += amount;
+      game.totalCredits += amount;
+    }
+
+    function addEvent(text) {
+      const now = new Date();
+      const time = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+      game.events.unshift("[" + time + "] " + text);
+      if (game.events.length > 45) game.events.pop();
+      renderEvents();
+    }
+
+    function unlockAchievement(id) {
+      if (game.achievements.includes(id)) return;
+      game.achievements.push(id);
+      const def = achievementDefs.find(a => a.id === id);
+      if (def) addEvent("Haut fait débloqué : " + def.name);
+      renderAchievements();
+    }
+
+    function checkAchievements() {
+      achievementDefs.forEach(a => {
+        if (!game.achievements.includes(a.id) && a.check(game)) unlockAchievement(a.id);
+      });
+    }
+
+    function renderEvents() {
+      const list = document.getElementById("eventsList");
+      list.innerHTML = "";
+      if (game.events.length === 0) {
+        list.innerHTML = `<div class="event-card">Aucun chaos pour le moment. Suspect.</div>`;
+        return;
+      }
+      game.events.forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "event-card";
+        div.textContent = entry;
+        list.appendChild(div);
+      });
+    }
+
+    function renderAchievements() {
+      const list = document.getElementById("achievementsList");
+      list.innerHTML = "";
+      achievementDefs.forEach(a => {
+        const unlocked = game.achievements.includes(a.id);
+        const div = document.createElement("div");
+        div.className = "achievement-card" + (unlocked ? "" : " locked");
+        div.innerHTML = `<strong>${a.name}</strong><p>${a.desc}</p>`;
+        list.appendChild(div);
+      });
+    }
+
+    function renderUnitsShop() {
+      const container = document.getElementById("unitsShop");
+      container.innerHTML = "";
+      unitDefs.forEach(unit => {
+        const card = document.createElement("div");
+        card.className = "shop-item";
+        card.innerHTML = `
+          <div>
+            <h3>${unit.name}</h3>
+            <p>${unit.desc}</p>
+            <small>Déployé : <span id="owned_${unit.id}">0</span></small>
+          </div>
+          <button class="buy-btn" id="btn_unit_${unit.id}">Recruter (${formatNumber(game.unitCosts[unit.id])})</button>
+        `;
+        container.appendChild(card);
+        card.querySelector("button").onclick = () => buyUnit(unit.id);
+      });
+    }
+
+    function renderUpgradesShop() {
+      const container = document.getElementById("upgradesShop");
+      container.innerHTML = "";
+      upgradeDefs.forEach(upg => {
+        const card = document.createElement("div");
+        card.className = "shop-item";
+        card.innerHTML = `
+          <div>
+            <h3>${upg.name}</h3>
+            <p>${upg.desc}</p>
+            <small>Niveau : <span id="lvl_${upg.id}">0</span></small>
+          </div>
+          <button class="buy-btn" id="btn_upg_${upg.id}">Acheter (${formatNumber(game.upgradeCosts[upg.id])})</button>
+        `;
+        container.appendChild(card);
+        card.querySelector("button").onclick = () => buyUpgrade(upg.id);
+      });
+    }
+
+    function renderTalentTree() {
+      const container = document.getElementById("talentTree");
+      container.innerHTML = "";
+      const unlocked = game.victories >= 3;
+      document.getElementById("talentUnlockText").textContent = unlocked
+        ? "Doctrine active. Dépense tes points pour civiliser ce Discord."
+        : "Débloque la doctrine au briefing 3.";
+
+      talentDefs.forEach(t => {
+        const canUnlock = game.victories >= t.unlockVictory;
+        const owned = game.talents[t.id] > 0;
+        const div = document.createElement("div");
+        div.className = "talent-card";
+        div.innerHTML = `
+          <strong>${t.name}</strong>
+          <p>${t.desc}</p>
+          <small>Tier ${t.tier} // Requiert briefing ${t.unlockVictory} // Coût ${t.cost}</small>
+          <button ${(!canUnlock || owned || game.talentPoints < t.cost) ? "disabled" : ""}>
+            ${owned ? "Débloqué" : "Débloquer"}
+          </button>
+        `;
+        div.querySelector("button").onclick = () => buyTalent(t.id);
+        container.appendChild(div);
+      });
+    }
+
+    function renderUnitsSummary() {
+      const el = document.getElementById("unitsSummary");
+      let html = "";
+      unitDefs.forEach(unit => {
+        html += `${unit.name} : <span id="sum_${unit.id}">${game.units[unit.id]}</span><br>`;
+      });
+      el.innerHTML = html;
+    }
+
+    function updateCampaignUI() {
+      const stepIndex = Math.min(game.currentCampaign, campaignSteps.length - 1);
+      const step = campaignSteps[stepIndex];
+      const prevTarget = stepIndex === 0 ? 0 : campaignSteps[stepIndex - 1].target;
+      const currentProgress = Math.max(0, game.totalCredits - prevTarget);
+      const needed = step.target - prevTarget;
+      const pct = Math.max(0, Math.min(100, (currentProgress / needed) * 100));
+
+      document.getElementById("campaignName").textContent = "Objectif actuel : " + step.name;
+      document.getElementById("campaignFill").style.width = pct + "%";
+      document.getElementById("campaignText").textContent =
+        formatNumber(currentProgress) + " / " + formatNumber(needed) + " crédits de discipline sur ce palier";
+    }
+
+    function updateBossUI() {
+      const nameEl = document.getElementById("bossName");
+      const fillEl = document.getElementById("bossFill");
+      const textEl = document.getElementById("bossText");
+
+      if (!game.activeBoss) {
+        nameEl.textContent = "Boss actuel : aucun drama détecté";
+        fillEl.style.width = "0%";
+        textEl.textContent = "En attente d'un problème administratif";
+        return;
+      }
+
+      const pct = Math.max(0, Math.min(100, (game.activeBoss.hp / game.activeBoss.maxHp) * 100));
+      nameEl.textContent = "Boss actuel : " + game.activeBoss.name;
+      fillEl.style.width = pct + "%";
+      textEl.textContent = formatNumber(game.activeBoss.hp) + " / " + formatNumber(game.activeBoss.maxHp) + " PV";
+    }
+
+    function updateButtons() {
+      unitDefs.forEach(unit => {
+        const btn = document.getElementById("btn_unit_" + unit.id);
+        if (btn) {
+          btn.disabled = game.credits < game.unitCosts[unit.id];
+          btn.textContent = "Recruter (" + formatNumber(game.unitCosts[unit.id]) + ")";
+        }
+      });
+
+      upgradeDefs.forEach(upg => {
+        const btn = document.getElementById("btn_upg_" + upg.id);
+        if (btn) {
+          btn.disabled = game.credits < game.upgradeCosts[upg.id];
+          btn.textContent = "Acheter (" + formatNumber(game.upgradeCosts[upg.id]) + ")";
+        }
+      });
+    }
+
+    function updateSummaryNumbers() {
+      document.getElementById("credits").textContent = formatNumber(game.credits);
+      document.getElementById("cps").textContent = formatNumber(getCps());
+      document.getElementById("clickPower").textContent = formatNumber(game.clickPower);
+      document.getElementById("techLevel").textContent = formatNumber(game.techLevel);
+      document.getElementById("victories").textContent = formatNumber(game.victories);
+      document.getElementById("talentPoints").textContent = formatNumber(game.talentPoints);
+      document.getElementById("totalCredits").textContent = formatNumber(game.totalCredits);
+      document.getElementById("eventsCount").textContent = formatNumber(game.randomEventsTriggered);
+      document.getElementById("bossesDefeated").textContent = formatNumber(game.bossesDefeated);
+
+      unitDefs.forEach(unit => {
+        const owned = document.getElementById("owned_" + unit.id);
+        const sum = document.getElementById("sum_" + unit.id);
+        if (owned) owned.textContent = game.units[unit.id];
+        if (sum) sum.textContent = game.units[unit.id];
+      });
+
+      upgradeDefs.forEach(upg => {
+        const lvl = document.getElementById("lvl_" + upg.id);
+        if (lvl) lvl.textContent = game.upgradeLevels[upg.id];
+      });
+    }
+
+    function updateUI() {
+      updateSummaryNumbers();
+      updateButtons();
+      updateCampaignUI();
+      updateBossUI();
+      renderAchievements();
+      renderEvents();
+      renderTalentTree();
+      checkAchievements();
+      checkCampaignProgress();
+      checkBossSpawn();
+    }
+
+    function buyUnit(id) {
+      const def = unitDefs.find(u => u.id === id);
+      if (!def) return;
+      const cost = game.unitCosts[id];
+      if (game.credits < cost) {
+        setLog("Crédits de discipline insuffisants. Retourne lire Discord.");
+        return;
+      }
+
+      game.credits -= cost;
+      game.units[id]++;
+      game.unitCosts[id] = Math.floor(game.unitCosts[id] * def.growth);
+      setLog(def.name + " déployé dans le chaos organisé.");
+      addEvent(def.name + " rejoint le vocal avec plus ou moins de discipline.");
+      updateUI();
+      saveGame(false);
+    }
+
+    function applyUpgradeEffect(def) {
+      if (def.effect === "click") game.clickPower += def.value;
+      if (def.effect === "tech") game.techLevel += def.value;
+      if (def.effect === "globalMult") game.upgradeEffects.globalMult += def.value;
+      if (def.effect === "memberMult") game.upgradeEffects.memberMult += def.value;
+      if (def.effect === "globalFlat") game.upgradeEffects.globalFlat += def.value;
+      if (def.effect === "bossDmg") game.upgradeEffects.bossDmg += def.value;
+      if (def.effect === "eventLuck") game.upgradeEffects.eventLuck += def.value;
+      if (def.effect === "eventResist") game.upgradeEffects.eventResist += def.value;
+    }
+
+    function buyUpgrade(id) {
+      const def = upgradeDefs.find(u => u.id === id);
+      if (!def) return;
+
+      const cost = game.upgradeCosts[id];
+      if (game.credits < cost) {
+        setLog("Pas assez de discipline. Même le slip C21 te juge.");
+        return;
+      }
+
+      game.credits -= cost;
+      game.upgradeLevels[id]++;
+      applyUpgradeEffect(def);
+      game.upgradeCosts[id] = Math.floor(game.upgradeCosts[id] * def.growth);
+      setLog(def.name + " validé par le conseil du troll.");
+      addEvent("Amélioration troll appliquée : " + def.name);
+      updateUI();
+      saveGame(false);
+    }
+
+    function buyTalent(id) {
+      const def = talentDefs.find(t => t.id === id);
+      if (!def) return;
+      if (game.victories < def.unlockVictory) return;
+      if (game.talents[id] > 0) return;
+      if (game.talentPoints < def.cost) return;
+
+      game.talentPoints -= def.cost;
+      game.talents[id] = 1;
+      setLog("Doctrine débloquée : " + def.name);
+      addEvent("Doctrine C21 validée : " + def.name);
+      updateUI();
+      saveGame(false);
+    }
+
+    function checkCampaignProgress() {
+      while (
+        game.currentCampaign < campaignSteps.length &&
+        game.totalCredits >= campaignSteps[game.currentCampaign].target
+      ) {
+        const step = campaignSteps[game.currentCampaign];
+        game.currentCampaign++;
+        game.victories++;
+        game.talentPoints += step.reward;
+        setLog("Palier troll franchi : " + step.name);
+        addEvent("Briefing survécu : " + step.name + " // +" + step.reward + " point(s) doctrine");
+      }
+    }
+
+    function checkBossSpawn() {
+      if (game.activeBoss) return;
+
+      for (let i = 0; i < bossDefs.length; i++) {
+        const boss = bossDefs[i];
+        if (game.totalCredits >= boss.threshold && game.bossesDefeated <= i) {
+          game.activeBoss = {
+            id: boss.id,
+            name: boss.name,
+            hp: boss.hp,
+            maxHp: boss.hp,
+            reward: boss.reward
+          };
+          addEvent("ALERTE TROLL : " + boss.name + " arrive.");
+          setLog("Boss détecté : " + boss.name);
+          break;
+        }
+      }
+    }
+
+    function tickBoss() {
+      if (!game.activeBoss) return;
+
+      const damage = getBossDamagePerSecond() / 10;
+      game.activeBoss.hp -= damage;
+
+      if (game.activeBoss.hp <= 0) {
+        const reward = game.activeBoss.reward;
+        addCredits(reward);
+        game.bossesDefeated++;
+        addEvent("Boss troll neutralisé : " + game.activeBoss.name + " // +" + formatNumber(reward) + " discipline");
+        setLog("Drama contenu. Tyr observe toujours.");
+        game.activeBoss = null;
+        updateUI();
+      }
+    }
+
+    function randomEventTick() {
+      const baseChance = 0.08;
+      const luck = getUpgradeBonus(game, "eventLuck") + getTalentBonus(game, "eventLuck");
+      const chance = baseChance + luck;
+
+      if (Math.random() > chance) return;
+
+      game.randomEventsTriggered++;
+
+      const events = [
+        {
+          type: "good",
+          action: () => {
+            const gain = Math.max(50, Math.floor(getCps() * 8));
+            addCredits(gain);
+            addEvent("Tyr observe en silence. Tout le monde se tient droit // +" + formatNumber(gain) + " discipline");
+            setLog("Présence de Tyr détectée.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            game.clickPower += 1;
+            addEvent("Quelqu'un a enfin lu Discord // +1 motivation clic");
+            setLog("Miracle Discord.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            game.talentPoints += 1;
+            addEvent("Un débrief utile apparaît dans la nature // +1 point doctrine");
+            setLog("Débrief rare capturé.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            const gain = Math.max(100, Math.floor(getCps() * 14));
+            addCredits(gain);
+            addEvent("Karza fait un truc utile. Personne n'était prêt // +" + formatNumber(gain) + " discipline");
+            setLog("Événement légendaire.");
+          }
+        },
+        {
+          type: "good",
+          action: () => {
+            game.techLevel += 1;
+            addEvent("Prière au Grand Tyr acceptée // +1 niveau d'ordre");
+            setLog("Tyr a peut-être cligné des yeux.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            const resist = getTalentBonus(game, "eventResist") + getUpgradeBonus(game, "eventResist");
+            const lossFactor = Math.max(0.03, 0.13 - resist);
+            const loss = Math.floor(game.credits * lossFactor);
+            game.credits = Math.max(0, game.credits - loss);
+            addEvent("Coburn a encore parlé en vocal // -" + formatNumber(loss) + " discipline");
+            setLog("Niveau de chaos critique.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            const candidates = unitDefs.filter(u => game.units[u.id] > 0);
+            if (candidates.length === 0) {
+              addEvent("Briefing annulé, mais personne n'était là de toute façon.");
+              return;
+            }
+            const pick = candidates[Math.floor(Math.random() * candidates.length)];
+            game.units[pick.id] = Math.max(0, game.units[pick.id] - 1);
+            addEvent("Un membre est parti AFK sans prévenir // -1 " + pick.name);
+            setLog("AFK non réglementaire.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            const loss = Math.floor(Math.max(20, getCps() * 3));
+            game.credits = Math.max(0, game.credits - loss);
+            addEvent("Serveur Arma décide de vivre sa propre vie // -" + formatNumber(loss) + " discipline");
+            setLog("Crash émotionnel du serveur.");
+          }
+        },
+        {
+          type: "bad",
+          action: () => {
+            game.clickPower = Math.max(1, game.clickPower - 1);
+            addEvent("Quelqu'un demande 'on fait quoi ?' après 20 minutes de brief // -1 motivation clic");
+            setLog("Motivation endommagée.");
+          }
+        }
+      ];
+
+      const event = events[Math.floor(Math.random() * events.length)];
+      event.action();
+      updateUI();
+    }
+
+    function passiveIncomeTick() {
+      const gain = getCps() / 10;
+      addCredits(gain);
+    }
+
+    document.getElementById("mainClick").addEventListener("click", (e) => {
+      const gain = game.clickPower * game.techLevel;
+      addCredits(gain);
+      createFloatingText(e.clientX, e.clientY, gain);
+      const logs = [
+        "Ordre donné. Exécution approximative.",
+        "Motivation injectée dans le vocal.",
+        "Discord vérifié. Rien n'a changé.",
+        "Un membre a dit 'présent' avec 12 minutes de retard.",
+        "Tyr observe. Tout le monde transpire."
+      ];
+      setLog(logs[Math.floor(Math.random() * logs.length)]);
+      updateUI();
+    });
+
+    function saveGame(showMessage = true) {
+      localStorage.setItem("c21DiscordTrollClickV1", JSON.stringify(game));
+      if (showMessage) setLog("Sauvegarde effectuée. Le chaos est conservé.");
+    }
+
+    function loadGame() {
+      const save = localStorage.getItem("c21DiscordTrollClickV1");
+      if (!save) {
+        addEvent("Nouvelle campagne troll C21 lancée.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(save);
+        const fresh = makeDefaultState();
+
+        game = {
+          ...fresh,
+          ...parsed,
+          units: { ...fresh.units, ...(parsed.units || {}) },
+          unitCosts: { ...fresh.unitCosts, ...(parsed.unitCosts || {}) },
+          upgradeLevels: { ...fresh.upgradeLevels, ...(parsed.upgradeLevels || {}) },
+          upgradeCosts: { ...fresh.upgradeCosts, ...(parsed.upgradeCosts || {}) },
+          achievements: parsed.achievements || [],
+          events: parsed.events || [],
+          talents: { ...fresh.talents, ...(parsed.talents || {}) },
+          upgradeEffects: { ...fresh.upgradeEffects, ...(parsed.upgradeEffects || {}) }
+        };
+
+        setLog("Sauvegarde C21 troll chargée.");
+      } catch (err) {
+        game = makeDefaultState();
+        addEvent("Erreur de chargement, le chaos repart à zéro.");
+      }
+    }
+
+    function resetGame() {
+      const ok = confirm("Tu veux vraiment réinitialiser toute la campagne troll C21 ?");
+      if (!ok) return;
+      localStorage.removeItem("c21DiscordTrollClickV1");
+      game = makeDefaultState();
+      renderUnitsShop();
+      renderUpgradesShop();
+      renderUnitsSummary();
+      addEvent("Nouvelle campagne troll lancée.");
+      setLog("Campagne réinitialisée. Coburn respawn.");
+      updateUI();
+    }
+
+    renderUnitsShop();
+    renderUpgradesShop();
+    renderUnitsSummary();
+    loadGame();
+    updateUI();
+
+    setInterval(() => {
+      passiveIncomeTick();
+      tickBoss();
+      updateUI();
+    }, 100);
+
+    setInterval(() => {
+      randomEventTick();
+    }, 12000);
+
+    setInterval(() => {
+      saveGame(false);
+    }, 5000);
+  </script>
+</body>
+</html>
