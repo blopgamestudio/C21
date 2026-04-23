@@ -1,890 +1,99 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>C21 Hclick Covenant</title>
-  <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
-
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background:
-    radial-gradient(circle at 20% 0%, rgba(138, 43, 226, 0.22), transparent 32%),
-    radial-gradient(circle at 80% 15%, rgba(255, 0, 255, 0.18), transparent 30%),
-    linear-gradient(180deg, #050208, #13051c 55%, #030104);
-  min-height: 100vh;
-  color: #e7c7ff;
-  padding: 24px;
-  font-family: "Share Tech Mono", monospace;
-}
-
-.wrapper {
-  width: 1400px;
-  max-width: 100%;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.grid-top {
-  display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
-  gap: 20px;
-}
-
-.panel {
-  background: rgba(10, 2, 18, 0.92);
-  border: 1px solid #a737ff;
-  box-shadow: 0 0 18px rgba(174, 0, 255, 0.45);
-  border-radius: 22px;
-  padding: 20px;
-  overflow: visible; /* FIX PRINCIPAL */
-}
-
-h1, h2, h3 {
-  font-family: "Orbitron", sans-serif;
-  color: #ffb7ff;
-  text-shadow: 0 0 8px #da33ff;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
-}
-
-.stat {
-  background: rgba(59, 12, 88, 0.85);
-  border: 1px solid #ca58ff;
-  border-radius: 14px;
-  padding: 12px;
-}
-
-.main-button {
-  width: 100%;
-  height: 180px;
-  border-radius: 22px;
-  border: 1px solid #ff61ff;
-  background: linear-gradient(135deg, #21002e, #5a167d);
-  color: #ffd9ff;
-  font-size: 28px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.75);
-  margin-bottom: 14px;
-}
-
-/* ===== FIX SHOP ITEMS ===== */
-
-.shop-item {
-  display: grid; /* 🔥 remplace flex */
-  grid-template-columns: 1fr;
-  gap: 12px;
-  align-items: stretch;
-  background: rgba(20, 3, 32, 0.94);
-  border: 1px solid rgba(208, 87, 255, 0.45);
-  border-radius: 16px;
-  padding: 14px;
-}
-
-/* évite débordement texte */
-.shop-item h3,
-.shop-item p,
-.shop-item small {
-  overflow-wrap: anywhere;
-}
-
-/* bouton propre */
-.buy-btn {
-  width: 100%;
-  min-width: 0;
-  padding: 12px 14px;
-}
-
-/* scroll fix */
-.scroll-area {
-  max-height: 700px;
-  overflow-y: auto;
-  padding-right: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-}
-
-/* boutons */
-button {
-  border-radius: 12px;
-  background: linear-gradient(135deg, #a537ff, #ff4df3);
-  color: #16001f;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-button:disabled {
-  background: #3f3350;
-  color: #8a759b;
-}
-
-/* responsive */
-@media (max-width: 1100px) {
-  .grid-top {
-    grid-template-columns: 1fr;
-  }
-}
-     </style>
+  <meta charset="UTF-8">
+  <title>C21 - Accueil</title>
+  <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <div class="overlay"></div>
 
-  <div class="wrapper">
-    <div class="grid-top">
-      <div class="panel">
-        <h1>Opération Grand Schisme</h1>
-        <div class="subtitle">Commandement Covenant // Culture Parasitaire</div>
+<header>
+  <nav>
+    <a href="index88.html">Accueil</a>
+    <div>
+        <a href="orbat.html">ORBAT</a>
+        <a href="info.html">Informations</a>
+        <a href="arbo.html">Hiérarchie</a>
+        <a href="hclick.html">OP TakeDown</a>
+        <a href="hclickcov.html">OP Oracle</a>
+        <a href="histo.html">Historique</a>
+        <a href="calendar.html">Calendrier</a>
+        <a href="shop.html">Magasin</a>
+        <a href="login.html">Connexion</a>
+      
 
-        <div class="campaign-box">
-          <h3 id="campaignName">Palier actuel</h3>
-          <div class="progress-bar"><div class="progress-fill" id="campaignFill"></div></div>
-          <div id="campaignText">0 / 1000</div>
-        </div>
-
-        <div class="boss-box">
-          <h3 id="bossName">Boss actuel : aucun hérétique majeur</h3>
-          <div class="progress-bar"><div class="progress-fill boss-fill" id="bossFill"></div></div>
-          <div id="bossText">En attente d'un champion</div>
-        </div>
-
-        <div class="stats">
-          <div class="stat"><span>Plasma</span><strong id="credits">0</strong></div>
-          <div class="stat"><span>Production / sec</span><strong id="cps">0</strong></div>
-          <div class="stat"><span>Culture / clic</span><strong id="clickPower">1</strong></div>
-          <div class="stat"><span>Foi technologique</span><strong id="techLevel">1</strong></div>
-          <div class="stat"><span>Conquêtes</span><strong id="victories">0</strong></div>
-          <div class="stat"><span>Faveurs</span><strong id="talentPoints">0</strong></div>
-          <div class="stat"><span>Plasma total</span><strong id="totalCredits">0</strong></div>
-          <div class="stat"><span>Présages subis</span><strong id="eventsCount">0</strong></div>
-          <div class="stat"><span>Boss vaincus</span><strong id="bossesDefeated">0</strong></div>
-        </div>
-
-        <button class="main-button" id="mainClick">CULTIVER PARASITES</button>
-        <div class="log" id="log">Activation des relais sacrés Covenant...</div>
-        <div class="footer-stats" id="unitsSummary"></div>
-
-        <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:12px;">
-          <button class="secondary-btn" onclick="saveGame()">Sauvegarder</button>
-          <button class="secondary-btn" onclick="resetGame()">Réinitialiser</button>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="two-col">
-          <div>
-            <h2>Host Covenant</h2>
-            <div class="section-note">Chaque invocation augmente le coût de la suivante.</div>
-            <div class="scroll-area" id="unitsShop"></div>
-          </div>
-          <div>
-            <h2>Rites & Améliorations</h2>
-            <div class="section-note">Renforce la flotte, la foi et la culture parasitaire.</div>
-            <div class="scroll-area" id="upgradesShop"></div>
-          </div>
-        </div>
-      </div>
     </div>
+  </nav>
+</header>
 
-    <div class="bottom-grid">
-      <div class="panel">
-        <h2>Glyphes sacrés</h2>
-        <div class="scroll-area" id="achievementsList"></div>
-      </div>
-      <div class="panel">
-        <h2>Journal du Prophète</h2>
-        <div class="scroll-area" id="eventsList"></div>
-      </div>
-      <div class="panel">
-        <h2>Doctrine Covenant</h2>
-        <div class="section-note" id="talentUnlockText">Débloque la doctrine à la conquête 3.</div>
-        <div class="talent-grid" id="talentTree"></div>
-      </div>
-    </div>
-  </div>
+<main>
+  
+    <div align="center">
 
-  <script>
-    const unitDefs = [
-      { id: "unggoy", name: "Unggoy", baseCost: 10, growth: 1.15, cps: 1, desc: "+1 plasma / sec" },
-      { id: "yanmee", name: "Yanme'e", baseCost: 30, growth: 1.16, cps: 4, desc: "+4 plasma / sec" },
-      { id: "jiralhanae", name: "Jiralhanae", baseCost: 75, growth: 1.17, cps: 9, desc: "+9 plasma / sec" },
-      { id: "sangheili", name: "Sangheili", baseCost: 160, growth: 1.18, cps: 18, desc: "+18 plasma / sec" },
-      { id: "spectre", name: "Spectre", baseCost: 330, growth: 1.19, cps: 35, desc: "+35 plasma / sec" },
-      { id: "shadow", name: "Shadow", baseCost: 650, growth: 1.20, cps: 70, desc: "+70 plasma / sec" },
-      { id: "aa", name: "Plateforme AA Covenant", baseCost: 1100, growth: 1.21, cps: 115, desc: "+115 plasma / sec" },
-      { id: "apparition", name: "Apparition", baseCost: 1900, growth: 1.22, cps: 190, desc: "+190 plasma / sec" },
-      { id: "banshee", name: "Banshee", baseCost: 3200, growth: 1.23, cps: 310, desc: "+310 plasma / sec" },
-      { id: "spirit", name: "Spirit", baseCost: 5200, growth: 1.24, cps: 480, desc: "+480 plasma / sec" },
-      { id: "seraph", name: "Seraph", baseCost: 8200, growth: 1.25, cps: 760, desc: "+760 plasma / sec" },
-      { id: "scarab", name: "Scarab", baseCost: 15000, growth: 1.26, cps: 1250, desc: "+1250 plasma / sec" },
-      { id: "crs", name: "Croiseur CRS", baseCost: 28000, growth: 1.27, cps: 2100, desc: "+2100 plasma / sec" },
-      { id: "sdv", name: "Corvette SDV", baseCost: 52000, growth: 1.28, cps: 3600, desc: "+3600 plasma / sec" },
-      { id: "ccs", name: "Croiseur CCS", baseCost: 95000, growth: 1.30, cps: 5900, desc: "+5900 plasma / sec" },
-      { id: "arbiter", name: "Arbiter", baseCost: 180000, growth: 1.32, cps: 10000, desc: "+10000 plasma / sec" },
-      { id: "plasmaCovenant", name: "Plasma Covenant", baseCost: 300000, growth: 1.34, cps: 17000, desc: "+17000 plasma / sec" }
-    ];
+  <p>Dans l’ombre des étoiles, une unité se lève.</p>
 
-    const upgradeDefs = [
-      { id: "needleStock", name: "Réserve de Needlers", baseCost: 70, growth: 1.50, effect: "click", value: 1, desc: "+1 culture par clic" },
-      { id: "plasmaForge", name: "Forge plasma instable", baseCost: 200, growth: 1.55, effect: "globalMult", value: 0.08, desc: "+8% production globale" },
-      { id: "prophetBlessing", name: "Bénédiction du Prophète", baseCost: 420, growth: 1.65, effect: "tech", value: 1, desc: "+1 foi technologique" },
-      { id: "gruntMethane", name: "Méthane renforcé Unggoy", baseCost: 650, growth: 1.65, effect: "infantryMult", value: 0.18, desc: "+18% troupes organiques" },
-      { id: "eliteDoctrine", name: "Doctrine Sangheili", baseCost: 1200, growth: 1.70, effect: "infantryMult", value: 0.25, desc: "+25% troupes organiques" },
-      { id: "bruteRage", name: "Rage Jiralhanae", baseCost: 2200, growth: 1.75, effect: "click", value: 5, desc: "+5 culture par clic" },
-      { id: "gravityLift", name: "Ascenseur gravitationnel", baseCost: 3800, growth: 1.80, effect: "globalFlat", value: 150, desc: "+150 plasma / sec plats" },
-      { id: "shieldMatrix", name: "Matrice de boucliers", baseCost: 6200, growth: 1.85, effect: "eventResist", value: 0.15, desc: "-15% pertes des mauvais présages" },
-      { id: "holyFleet", name: "Flotte sacrée", baseCost: 9500, growth: 1.95, effect: "heavyMult", value: 0.30, desc: "+30% véhicules et vaisseaux" },
-      { id: "oracleHack", name: "Oracle corrompu", baseCost: 14000, growth: 2.00, effect: "eventLuck", value: 0.15, desc: "Présages favorables plus fréquents" },
-      { id: "glassBeam", name: "Rayon de vitrification", baseCost: 24000, growth: 2.10, effect: "bossDmg", value: 0.25, desc: "+25% dégâts contre les boss" },
-      { id: "greatJourney", name: "Grand Voyage", baseCost: 50000, growth: 2.25, effect: "globalMult", value: 0.45, desc: "+45% production globale" }
-    ];
+  <p>
+    La Compagnie 21 n’est pas simplement une escouade.<br>
+    C’est une force.<br>
+    Une fraternité.<br>
+    Une légende en construction.
+  </p>
 
-    const campaignSteps = [
-      { target: 1000, name: "Nid parasitaire éveillé", reward: 1 },
-      { target: 5000, name: "Mine de plasma profanée", reward: 1 },
-      { target: 18000, name: "Avant-poste hérétique purgé", reward: 2 },
-      { target: 60000, name: "Reliquaire Forerunner ouvert", reward: 2 },
-      { target: 180000, name: "Lune placée sous blocus", reward: 3 },
-      { target: 600000, name: "Monde humain vitrifié", reward: 3 },
-      { target: 1800000, name: "Croisade régionale", reward: 4 },
-      { target: 5000000, name: "Flotte sacrée assemblée", reward: 4 },
-      { target: 12000000, name: "Schisme contrôlé", reward: 5 },
-      { target: 30000000, name: "Grand Voyage imposé", reward: 5 }
-    ];
+  <p>
+    Sur ARMA 3, au cœur de l’univers HALO, nous menons des opérations sérieuses, intenses et totalement immersives.<br>
+    Chaque mission est scénarisée, fondée, pensée pour repousser vos limites.<br>
+    Chaque opération est unique.<br>
+    Chaque décision a un impact.
+  </p>
 
-    const bossDefs = [
-      { id: "heretic", name: "Commandant Hérétique", threshold: 5000, hp: 5000, reward: 800 },
-      { id: "demon", name: "Démon Spartan capturé", threshold: 60000, hp: 45000, reward: 7000 },
-      { id: "oracle", name: "Oracle Forerunner hostile", threshold: 600000, hp: 350000, reward: 65000 },
-      { id: "unscCarrier", name: "Porte-vaisseaux UNSC", threshold: 5000000, hp: 2600000, reward: 700000 },
-      { id: "falseProphet", name: "Faux Prophète du Schisme", threshold: 25000000, hp: 12000000, reward: 3000000 }
-    ];
+  <p>
+    Opérations custom.<br>
+    Scénarios originaux.<br>
+    Environnements personnalisés.<br>
+    Ennemis imprévisibles.
+  </p>
 
-    const achievementDefs = [
-      { id: "click1", name: "Premier parasite", desc: "Générer ton premier plasma.", check: g => g.totalCredits >= 1 },
-      { id: "units10", name: "Petite host", desc: "Invoquer 10 unités.", check: g => getTotalUnits(g) >= 10 },
-      { id: "units50", name: "Host de guerre", desc: "Invoquer 50 unités.", check: g => getTotalUnits(g) >= 50 },
-      { id: "units150", name: "Croisade massive", desc: "Invoquer 150 unités.", check: g => getTotalUnits(g) >= 150 },
-      { id: "unggoy25", name: "Marée Unggoy", desc: "Avoir 25 Unggoys.", check: g => g.units.unggoy >= 25 },
-      { id: "elite20", name: "Lame Sangheili", desc: "Avoir 20 Sangheilis.", check: g => g.units.sangheili >= 20 },
-      { id: "scarab5", name: "Piétinement sacré", desc: "Avoir 5 Scarabs.", check: g => g.units.scarab >= 5 },
-      { id: "banshee15", name: "Ciel violet", desc: "Avoir 15 Banshees.", check: g => g.units.banshee >= 15 },
-      { id: "arbiter1", name: "Lame de l'Arbiter", desc: "Déployer un Arbiter.", check: g => g.units.arbiter >= 1 },
-      { id: "cps1000", name: "Forge vivante", desc: "Atteindre 1000 plasma / sec.", check: g => getCps(g) >= 1000 },
-      { id: "cps10000", name: "Économie sacrée", desc: "Atteindre 10000 plasma / sec.", check: g => getCps(g) >= 10000 },
-      { id: "boss1", name: "Hérésie brisée", desc: "Vaincre un boss.", check: g => g.bossesDefeated >= 1 },
-      { id: "victory5", name: "Conquête rituelle", desc: "Atteindre 5 conquêtes.", check: g => g.victories >= 5 },
-      { id: "tech10", name: "Foi transcendante", desc: "Atteindre la foi technologique 10.", check: g => g.techLevel >= 10 }
-    ];
+  <p>
+    Nos bootcamps sont réguliers, exigeants, mais accessibles.<br>
+    Que vous soyez recrue ou vétéran, vous progressez, vous apprenez, vous vous perfectionnez.
+  </p>
 
-    const talentDefs = [
-      { id: "caste", name: "Caste disciplinée", tier: 1, unlockVictory: 3, cost: 1, desc: "+10% production globale", effect: { globalMult: 0.10 } },
-      { id: "organic", name: "Chair de guerre", tier: 2, unlockVictory: 4, cost: 1, desc: "+20% troupes organiques", effect: { infantryMult: 0.20 } },
-      { id: "armor", name: "Machines sacrées", tier: 2, unlockVictory: 4, cost: 1, desc: "+20% véhicules et vaisseaux", effect: { heavyMult: 0.20 } },
-      { id: "ritual", name: "Rites du Plasma", tier: 2, unlockVictory: 4, cost: 1, desc: "+15% production globale", effect: { globalMult: 0.15 } },
-      { id: "zealot", name: "Zélotes impurs", tier: 2, unlockVictory: 4, cost: 1, desc: "-15% dégâts des événements négatifs", effect: { eventResist: 0.15 } },
-      { id: "honorGuard", name: "Garde d'honneur", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% troupes organiques", effect: { infantryMult: 0.35 } },
-      { id: "shipmaster", name: "Maître de flotte", tier: 3, unlockVictory: 5, cost: 2, desc: "+35% véhicules et vaisseaux", effect: { heavyMult: 0.35 } },
-      { id: "prophetVision", name: "Vision du Prophète", tier: 3, unlockVictory: 5, cost: 2, desc: "+25% production globale", effect: { globalMult: 0.25 } },
-      { id: "omens", name: "Présages favorables", tier: 3, unlockVictory: 5, cost: 2, desc: "+25% chance d'événement favorable", effect: { eventLuck: 0.25 } }
-    ];
+  <p>
+    Mais surtout…<br>
+    La Compagnie 21, c’est une communauté soudée.<br>
+    Respect, engagement, entraide.<br>
+    On combat ensemble.<br>
+    On survit ensemble.
+  </p>
 
-    const infantryUnits = ["unggoy", "yanmee", "jiralhanae", "sangheili", "arbiter"];
-    const heavyUnits = ["spectre", "shadow", "aa", "apparition", "banshee", "spirit", "seraph", "scarab", "crs", "sdv", "ccs", "plasmaCovenant"];
+  <p>
+    Vous cherchez plus qu’un simple serveur RP ?<br>
+    Vous cherchez une unité.<br>
+    Un vrai défi.<br>
+    Une expérience HALO comme vous ne l’avez jamais vécue.
+  </p>
 
-    function makeDefaultState() {
-      const units = {};
-      const unitCosts = {};
-      unitDefs.forEach(u => { units[u.id] = 0; unitCosts[u.id] = u.baseCost; });
+  <p><strong>La Compagnie 21 recrute.<br>Serez-vous à la hauteur ?</strong></p>
 
-      const upgradeLevels = {};
-      const upgradeCosts = {};
-      upgradeDefs.forEach(u => { upgradeLevels[u.id] = 0; upgradeCosts[u.id] = u.baseCost; });
+  <br>
 
-      const talents = {};
-      talentDefs.forEach(t => talents[t.id] = 0);
+  <p><strong>Compagnie 21 — Unité HALO RP sur ARMA 3</strong></p>
 
-      return {
-        credits: 0,
-        totalCredits: 0,
-        clickPower: 1,
-        techLevel: 1,
-        victories: 0,
-        currentCampaign: 0,
-        bossesDefeated: 0,
-        randomEventsTriggered: 0,
-        units,
-        unitCosts,
-        upgradeLevels,
-        upgradeCosts,
-        achievements: [],
-        events: [],
-        talentPoints: 0,
-        talents,
-        activeBoss: null,
-        upgradeEffects: {
-          globalMult: 0,
-          infantryMult: 0,
-          heavyMult: 0,
-          globalFlat: 0,
-          bossDmg: 0,
-          eventLuck: 0,
-          eventResist: 0
-        }
-      };
-    }
+  <p>
+    ✔ Scénarios sérieux et originaux<br>
+    ✔ Opérations custom et personnalisées<br>
+    ✔ Bootcamps réguliers et complets<br>
+    ✔ Communauté soudée et engagée<br>
+    ✔ Immersion totale dans l’univers HALO
+  </p>
 
-    let game = makeDefaultState();
+  <p><strong>Plus qu’un simple RP. Une véritable expérience militaire.</strong></p>
 
-    function formatNumber(num) { return Math.floor(num).toLocaleString("fr-FR"); }
-    function setLog(text) { document.getElementById("log").textContent = text; }
-    function getTotalUnits(g = game) { return Object.values(g.units).reduce((a, b) => a + b, 0); }
 
-    function getTalentBonus(g = game, key) {
-      let total = 0;
-      talentDefs.forEach(t => { if (g.talents[t.id] > 0 && t.effect[key]) total += t.effect[key]; });
-      return total;
-    }
 
-    function getUpgradeBonus(g = game, key) { return g.upgradeEffects[key] || 0; }
+</div>
 
-    function getUnitCps(unitId, g = game) {
-      const def = unitDefs.find(u => u.id === unitId);
-      if (!def) return 0;
-      let mult = 1;
-      if (infantryUnits.includes(unitId)) mult += getUpgradeBonus(g, "infantryMult") + getTalentBonus(g, "infantryMult");
-      if (heavyUnits.includes(unitId)) mult += getUpgradeBonus(g, "heavyMult") + getTalentBonus(g, "heavyMult");
-      return def.cps * mult;
-    }
+</main>
 
-    function getBaseCps(g = game) {
-      let total = 0;
-      unitDefs.forEach(unit => { total += g.units[unit.id] * getUnitCps(unit.id, g); });
-      return total;
-    }
-
-    function getCps(g = game) {
-      const globalMult = 1 + getUpgradeBonus(g, "globalMult") + getTalentBonus(g, "globalMult");
-      return Math.floor((getBaseCps(g) + getUpgradeBonus(g, "globalFlat")) * g.techLevel * globalMult);
-    }
-
-    function getBossDamagePerSecond(g = game) {
-      return Math.max(1, Math.floor(getCps(g) * (0.04 + getUpgradeBonus(g, "bossDmg"))));
-    }
-
-    function createFloatingText(x, y, value) {
-      const text = document.createElement("div");
-      text.className = "floating-text";
-      text.textContent = "+" + formatNumber(value);
-      text.style.left = x + "px";
-      text.style.top = y + "px";
-      document.body.appendChild(text);
-      setTimeout(() => text.remove(), 800);
-    }
-
-    function addCredits(amount) {
-      game.credits += amount;
-      game.totalCredits += amount;
-    }
-
-    function addEvent(text) {
-      const now = new Date();
-      const time = now.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-      game.events.unshift("[" + time + "] " + text);
-      if (game.events.length > 40) game.events.pop();
-      renderEvents();
-    }
-
-    function unlockAchievement(id) {
-      if (game.achievements.includes(id)) return;
-      game.achievements.push(id);
-      const def = achievementDefs.find(a => a.id === id);
-      if (def) addEvent("Glyphe sacré débloqué : " + def.name);
-      renderAchievements();
-    }
-
-    function checkAchievements() {
-      achievementDefs.forEach(a => {
-        if (!game.achievements.includes(a.id) && a.check(game)) unlockAchievement(a.id);
-      });
-    }
-
-    function renderEvents() {
-      const list = document.getElementById("eventsList");
-      list.innerHTML = "";
-      if (game.events.length === 0) {
-        list.innerHTML = `<div class="event-card">Aucun présage pour le moment.</div>`;
-        return;
-      }
-      game.events.forEach(entry => {
-        const div = document.createElement("div");
-        div.className = "event-card";
-        div.textContent = entry;
-        list.appendChild(div);
-      });
-    }
-
-    function renderAchievements() {
-      const list = document.getElementById("achievementsList");
-      list.innerHTML = "";
-      achievementDefs.forEach(a => {
-        const unlocked = game.achievements.includes(a.id);
-        const div = document.createElement("div");
-        div.className = "achievement-card" + (unlocked ? "" : " locked");
-        div.innerHTML = `<strong>${a.name}</strong><p>${a.desc}</p>`;
-        list.appendChild(div);
-      });
-    }
-
-    function renderUnitsShop() {
-      const container = document.getElementById("unitsShop");
-      container.innerHTML = "";
-      unitDefs.forEach(unit => {
-        const card = document.createElement("div");
-        card.className = "shop-item";
-        card.innerHTML = `
-          <div>
-            <h3>${unit.name}</h3>
-            <p>${unit.desc}</p>
-            <small>Possédé : <span id="owned_${unit.id}">0</span></small>
-          </div>
-          <button class="buy-btn" id="btn_unit_${unit.id}">Invoquer (${formatNumber(game.unitCosts[unit.id])})</button>
-        `;
-        container.appendChild(card);
-        card.querySelector("button").onclick = () => buyUnit(unit.id);
-      });
-    }
-
-    function renderUpgradesShop() {
-      const container = document.getElementById("upgradesShop");
-      container.innerHTML = "";
-      upgradeDefs.forEach(upg => {
-        const card = document.createElement("div");
-        card.className = "shop-item";
-        card.innerHTML = `
-          <div>
-            <h3>${upg.name}</h3>
-            <p>${upg.desc}</p>
-            <small>Niveau : <span id="lvl_${upg.id}">0</span></small>
-          </div>
-          <button class="buy-btn" id="btn_upg_${upg.id}">Ritualiser (${formatNumber(game.upgradeCosts[upg.id])})</button>
-        `;
-        container.appendChild(card);
-        card.querySelector("button").onclick = () => buyUpgrade(upg.id);
-      });
-    }
-
-    function renderTalentTree() {
-      const container = document.getElementById("talentTree");
-      container.innerHTML = "";
-      const unlocked = game.victories >= 3;
-      document.getElementById("talentUnlockText").textContent = unlocked
-        ? "Doctrine active. Dépense tes faveurs pour spécialiser la croisade."
-        : "Débloque la doctrine à la conquête 3.";
-
-      talentDefs.forEach(t => {
-        const canUnlock = game.victories >= t.unlockVictory;
-        const owned = game.talents[t.id] > 0;
-        const div = document.createElement("div");
-        div.className = "talent-card";
-        div.innerHTML = `
-          <strong>${t.name}</strong>
-          <p>${t.desc}</p>
-          <small>Tier ${t.tier} // Requiert conquête ${t.unlockVictory} // Coût ${t.cost}</small>
-          <button ${(!canUnlock || owned || game.talentPoints < t.cost) ? "disabled" : ""}>
-            ${owned ? "Débloqué" : "Débloquer"}
-          </button>
-        `;
-        div.querySelector("button").onclick = () => buyTalent(t.id);
-        container.appendChild(div);
-      });
-    }
-
-    function renderUnitsSummary() {
-      const el = document.getElementById("unitsSummary");
-      let html = "";
-      unitDefs.forEach(unit => { html += `${unit.name} : <span id="sum_${unit.id}">${game.units[unit.id]}</span><br>`; });
-      el.innerHTML = html;
-    }
-
-    function updateCampaignUI() {
-      const stepIndex = Math.min(game.currentCampaign, campaignSteps.length - 1);
-      const step = campaignSteps[stepIndex];
-      const prevTarget = stepIndex === 0 ? 0 : campaignSteps[stepIndex - 1].target;
-      const currentProgress = Math.max(0, game.totalCredits - prevTarget);
-      const needed = step.target - prevTarget;
-      const pct = Math.max(0, Math.min(100, (currentProgress / needed) * 100));
-
-      document.getElementById("campaignName").textContent = "Conquête actuelle : " + step.name;
-      document.getElementById("campaignFill").style.width = pct + "%";
-      document.getElementById("campaignText").textContent =
-        formatNumber(currentProgress) + " / " + formatNumber(needed) + " plasma sur cette conquête";
-    }
-
-    function updateBossUI() {
-      const nameEl = document.getElementById("bossName");
-      const fillEl = document.getElementById("bossFill");
-      const textEl = document.getElementById("bossText");
-
-      if (!game.activeBoss) {
-        nameEl.textContent = "Boss actuel : aucun hérétique majeur";
-        fillEl.style.width = "0%";
-        textEl.textContent = "En attente d'un champion";
-        return;
-      }
-
-      const pct = Math.max(0, Math.min(100, (game.activeBoss.hp / game.activeBoss.maxHp) * 100));
-      nameEl.textContent = "Boss actuel : " + game.activeBoss.name;
-      fillEl.style.width = pct + "%";
-      textEl.textContent = formatNumber(game.activeBoss.hp) + " / " + formatNumber(game.activeBoss.maxHp) + " PV";
-    }
-
-    function updateButtons() {
-      unitDefs.forEach(unit => {
-        const btn = document.getElementById("btn_unit_" + unit.id);
-        if (btn) {
-          btn.disabled = game.credits < game.unitCosts[unit.id];
-          btn.textContent = "Invoquer (" + formatNumber(game.unitCosts[unit.id]) + ")";
-        }
-      });
-
-      upgradeDefs.forEach(upg => {
-        const btn = document.getElementById("btn_upg_" + upg.id);
-        if (btn) {
-          btn.disabled = game.credits < game.upgradeCosts[upg.id];
-          btn.textContent = "Ritualiser (" + formatNumber(game.upgradeCosts[upg.id]) + ")";
-        }
-      });
-    }
-
-    function updateSummaryNumbers() {
-      document.getElementById("credits").textContent = formatNumber(game.credits);
-      document.getElementById("cps").textContent = formatNumber(getCps());
-      document.getElementById("clickPower").textContent = formatNumber(game.clickPower);
-      document.getElementById("techLevel").textContent = formatNumber(game.techLevel);
-      document.getElementById("victories").textContent = formatNumber(game.victories);
-      document.getElementById("talentPoints").textContent = formatNumber(game.talentPoints);
-      document.getElementById("totalCredits").textContent = formatNumber(game.totalCredits);
-      document.getElementById("eventsCount").textContent = formatNumber(game.randomEventsTriggered);
-      document.getElementById("bossesDefeated").textContent = formatNumber(game.bossesDefeated);
-
-      unitDefs.forEach(unit => {
-        const owned = document.getElementById("owned_" + unit.id);
-        const sum = document.getElementById("sum_" + unit.id);
-        if (owned) owned.textContent = game.units[unit.id];
-        if (sum) sum.textContent = game.units[unit.id];
-      });
-
-      upgradeDefs.forEach(upg => {
-        const lvl = document.getElementById("lvl_" + upg.id);
-        if (lvl) lvl.textContent = game.upgradeLevels[upg.id];
-      });
-    }
-
-    function updateUI() {
-      updateSummaryNumbers();
-      updateButtons();
-      updateCampaignUI();
-      updateBossUI();
-      renderAchievements();
-      renderEvents();
-      renderTalentTree();
-      checkAchievements();
-      checkCampaignProgress();
-      checkBossSpawn();
-    }
-
-    function buyUnit(id) {
-      const def = unitDefs.find(u => u.id === id);
-      if (!def) return;
-      const cost = game.unitCosts[id];
-      if (game.credits < cost) {
-        setLog("Plasma insuffisant.");
-        return;
-      }
-
-      game.credits -= cost;
-      game.units[id]++;
-      game.unitCosts[id] = Math.floor(game.unitCosts[id] * def.growth);
-      setLog(def.name + " invoqué.");
-      addEvent(def.name + " rejoint la host Covenant.");
-      updateUI();
-      saveGame(false);
-    }
-
-    function applyUpgradeEffect(def) {
-      if (def.effect === "click") game.clickPower += def.value;
-      if (def.effect === "tech") game.techLevel += def.value;
-      if (def.effect === "globalMult") game.upgradeEffects.globalMult += def.value;
-      if (def.effect === "infantryMult") game.upgradeEffects.infantryMult += def.value;
-      if (def.effect === "heavyMult") game.upgradeEffects.heavyMult += def.value;
-      if (def.effect === "globalFlat") game.upgradeEffects.globalFlat += def.value;
-      if (def.effect === "bossDmg") game.upgradeEffects.bossDmg += def.value;
-      if (def.effect === "eventLuck") game.upgradeEffects.eventLuck += def.value;
-      if (def.effect === "eventResist") game.upgradeEffects.eventResist += def.value;
-    }
-
-    function buyUpgrade(id) {
-      const def = upgradeDefs.find(u => u.id === id);
-      if (!def) return;
-      const cost = game.upgradeCosts[id];
-      if (game.credits < cost) {
-        setLog("Plasma insuffisant.");
-        return;
-      }
-
-      game.credits -= cost;
-      game.upgradeLevels[id]++;
-      applyUpgradeEffect(def);
-      game.upgradeCosts[id] = Math.floor(game.upgradeCosts[id] * def.growth);
-      setLog(def.name + " accompli.");
-      addEvent("Rite appliqué : " + def.name);
-      updateUI();
-      saveGame(false);
-    }
-
-    function buyTalent(id) {
-      const def = talentDefs.find(t => t.id === id);
-      if (!def) return;
-      if (game.victories < def.unlockVictory) return;
-      if (game.talents[id] > 0) return;
-      if (game.talentPoints < def.cost) return;
-
-      game.talentPoints -= def.cost;
-      game.talents[id] = 1;
-      setLog("Doctrine débloquée : " + def.name);
-      addEvent("Doctrine validée : " + def.name);
-      updateUI();
-      saveGame(false);
-    }
-
-    function checkCampaignProgress() {
-      while (game.currentCampaign < campaignSteps.length && game.totalCredits >= campaignSteps[game.currentCampaign].target) {
-        const step = campaignSteps[game.currentCampaign];
-        game.currentCampaign++;
-        game.victories++;
-        game.talentPoints += step.reward;
-        setLog("Conquête accomplie : " + step.name);
-        addEvent("Conquête sacrée : " + step.name + " // +" + step.reward + " faveur(s)");
-      }
-    }
-
-    function checkBossSpawn() {
-      if (game.activeBoss) return;
-      for (let i = 0; i < bossDefs.length; i++) {
-        const boss = bossDefs[i];
-        if (game.totalCredits >= boss.threshold && game.bossesDefeated <= i) {
-          game.activeBoss = {
-            id: boss.id,
-            name: boss.name,
-            hp: boss.hp,
-            maxHp: boss.hp,
-            reward: boss.reward
-          };
-          addEvent("Présage majeur : cible détectée // " + boss.name);
-          setLog("Boss détecté : " + boss.name);
-          break;
-        }
-      }
-    }
-
-    function tickBoss() {
-      if (!game.activeBoss) return;
-      const damage = getBossDamagePerSecond() / 10;
-      game.activeBoss.hp -= damage;
-
-      if (game.activeBoss.hp <= 0) {
-        const reward = game.activeBoss.reward;
-        addCredits(reward);
-        game.bossesDefeated++;
-        addEvent("Boss brisé : " + game.activeBoss.name + " // tribut " + formatNumber(reward) + " plasma");
-        setLog("Hérésie purgée.");
-        game.activeBoss = null;
-        updateUI();
-      }
-    }
-
-    function randomEventTick() {
-      const baseChance = 0.08;
-      const luck = getUpgradeBonus(game, "eventLuck") + getTalentBonus(game, "eventLuck");
-      const chance = baseChance + luck;
-      if (Math.random() > chance) return;
-
-      game.randomEventsTriggered++;
-
-      const events = [
-        {
-          type: "good",
-          action: () => {
-            const gain = Math.max(50, Math.floor(getCps() * 8));
-            addCredits(gain);
-            addEvent("Réacteur plasma récupéré // +" + formatNumber(gain) + " plasma");
-            setLog("Présage favorable.");
-          }
-        },
-        {
-          type: "good",
-          action: () => {
-            game.clickPower += 1;
-            addEvent("Souche parasitaire mutée // +1 culture par clic");
-            setLog("Mutation utile.");
-          }
-        },
-        {
-          type: "good",
-          action: () => {
-            game.talentPoints += 1;
-            addEvent("Vision sacrée du Prophète // +1 faveur");
-            setLog("Faveur accordée.");
-          }
-        },
-        {
-          type: "good",
-          action: () => {
-            const gain = Math.max(100, Math.floor(getCps() * 14));
-            addCredits(gain);
-            addEvent("Colonie hérétique absorbée // +" + formatNumber(gain) + " plasma");
-            setLog("Absorption réussie.");
-          }
-        },
-        {
-          type: "bad",
-          action: () => {
-            const resist = getTalentBonus(game, "eventResist") + getUpgradeBonus(game, "eventResist");
-            const lossFactor = Math.max(0.03, 0.12 - resist);
-            const loss = Math.floor(game.credits * lossFactor);
-            game.credits = Math.max(0, game.credits - loss);
-            addEvent("Fuite de plasma instable // -" + formatNumber(loss) + " plasma");
-            setLog("Instabilité énergétique.");
-          }
-        },
-        {
-          type: "bad",
-          action: () => {
-            const candidates = unitDefs.filter(u => game.units[u.id] > 0);
-            if (candidates.length === 0) {
-              addEvent("Sabotage hérétique détecté, aucun actif perdu.");
-              return;
-            }
-            const pick = candidates[Math.floor(Math.random() * candidates.length)];
-            game.units[pick.id] = Math.max(0, game.units[pick.id] - 1);
-            addEvent("Assaut UNSC nocturne // 1 " + pick.name + " perdu");
-            setLog("Perte dans la host.");
-          }
-        },
-        {
-          type: "bad",
-          action: () => {
-            const loss = Math.floor(Math.max(20, getCps() * 3));
-            game.credits = Math.max(0, game.credits - loss);
-            addEvent("Rituel corrompu par le Flood // -" + formatNumber(loss) + " plasma");
-            setLog("Corruption rituelle.");
-          }
-        }
-      ];
-
-      const event = events[Math.floor(Math.random() * events.length)];
-      event.action();
-      updateUI();
-    }
-
-    function passiveIncomeTick() {
-      const gain = getCps() / 10;
-      addCredits(gain);
-    }
-
-    document.getElementById("mainClick").addEventListener("click", (e) => {
-      const gain = game.clickPower * game.techLevel;
-      addCredits(gain);
-      createFloatingText(e.clientX, e.clientY, gain);
-      setLog("Parasites cultivés. Plasma extrait.");
-      updateUI();
-    });
-
-    function saveGame(showMessage = true) {
-      localStorage.setItem("c21CovenantClickV1", JSON.stringify(game));
-      if (showMessage) setLog("Sauvegarde rituelle effectuée.");
-    }
-
-    function loadGame() {
-      const save = localStorage.getItem("c21CovenantClickV1");
-      if (!save) {
-        addEvent("Démarrage d'une nouvelle croisade Covenant.");
-        return;
-      }
-
-      try {
-        const parsed = JSON.parse(save);
-        const fresh = makeDefaultState();
-
-        game = {
-          ...fresh,
-          ...parsed,
-          units: { ...fresh.units, ...(parsed.units || {}) },
-          unitCosts: { ...fresh.unitCosts, ...(parsed.unitCosts || {}) },
-          upgradeLevels: { ...fresh.upgradeLevels, ...(parsed.upgradeLevels || {}) },
-          upgradeCosts: { ...fresh.upgradeCosts, ...(parsed.upgradeCosts || {}) },
-          achievements: parsed.achievements || [],
-          events: parsed.events || [],
-          talents: { ...fresh.talents, ...(parsed.talents || {}) },
-          upgradeEffects: { ...fresh.upgradeEffects, ...(parsed.upgradeEffects || {}) }
-        };
-
-        setLog("Sauvegarde Covenant chargée.");
-      } catch (err) {
-        game = makeDefaultState();
-        addEvent("Erreur de chargement, nouvelle croisade lancée.");
-      }
-    }
-
-    function resetGame() {
-      const ok = confirm("Tu veux vraiment réinitialiser toute la croisade Covenant ?");
-      if (!ok) return;
-      localStorage.removeItem("c21CovenantClickV1");
-      game = makeDefaultState();
-      renderUnitsShop();
-      renderUpgradesShop();
-      renderUnitsSummary();
-      addEvent("Nouvelle croisade lancée.");
-      setLog("Croisade réinitialisée.");
-      updateUI();
-    }
-
-    renderUnitsShop();
-    renderUpgradesShop();
-    renderUnitsSummary();
-    loadGame();
-    updateUI();
-
-    setInterval(() => {
-      passiveIncomeTick();
-      tickBoss();
-      updateUI();
-    }, 100);
-
-    setInterval(() => {
-      randomEventTick();
-    }, 12000);
-
-    setInterval(() => {
-      saveGame(false);
-    }, 5000);
-  </script>
 </body>
 </html>
