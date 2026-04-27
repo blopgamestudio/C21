@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sergueï Survivor</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: system-ui, sans-serif;
+    background:
+        radial-gradient(circle at top left, #ff2bd6, transparent 35%),
+        radial-gradient(circle at bottom right, #00f5ff, transparent 35%),
+        linear-gradient(135deg, #16001e, #050816);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    overflow-x: hidden;
+}
+
+.game {
+    width: min(100%, 760px);
+    padding: clamp(18px, 4vw, 35px);
+    border-radius: 30px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    box-shadow: 0 0 40px rgba(0,255,255,0.25);
+    backdrop-filter: blur(14px);
+    text-align: center;
+}
+
+h1 {
+    margin: 0 0 10px;
+    font-size: clamp(2rem, 7vw, 4.5rem);
+    background: linear-gradient(90deg, #ff4ecd, #00f5ff, #ffe600);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: #ddd;
+    margin-bottom: 25px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.card {
+    background: rgba(0,0,0,0.35);
+    border-radius: 20px;
+    padding: 15px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.card span {
+    display: block;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #00f5ff;
+}
+
+.bar-wrap {
+    width: 100%;
+    height: 28px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 999px;
+    padding: 4px;
+    margin-bottom: 30px;
+}
+
+#hungerBar {
+    height: 100%;
+    width: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #00ff88, #d4ff00);
+    transition: 0.25s ease;
+}
+
+.serguei-zone {
+    min-height: 260px;
+    display: grid;
+    place-items: center;
+}
+
+#serguei {
+    width: 130px;
+    height: 130px;
+    max-width: 70vw;
+    max-height: 70vw;
+    border-radius: 45% 55% 50% 50%;
+    background: linear-gradient(135deg, #ffb703, #fb5607);
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    color: #261000;
+    box-shadow:
+        0 0 25px rgba(255,190,0,0.8),
+        inset -10px -10px 20px rgba(0,0,0,0.18);
+    transition: 0.3s ease;
+    animation: blob 2s infinite ease-in-out;
+}
+
+@keyframes blob {
+    0%, 100% { border-radius: 45% 55% 50% 50%; transform: translateY(0); }
+    50% { border-radius: 60% 40% 45% 55%; transform: translateY(-8px); }
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+button {
+    border: 0;
+    padding: 15px 24px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    color: #080014;
+    background: linear-gradient(135deg, #00f5ff, #ffe600);
+    box-shadow: 0 8px 0 #000;
+    transition: 0.15s;
+}
+
+button:hover {
+    transform: translateY(-3px) scale(1.03);
+}
+
+button:active {
+    transform: translateY(6px);
+    box-shadow: 0 2px 0 #000;
+}
+
+#message {
+    margin-top: 25px;
+    min-height: 55px;
+    padding: 15px;
+    border-radius: 18px;
+    background: rgba(0,0,0,0.32);
+    font-size: 1.05rem;
+}
+
+.dead {
+    background: linear-gradient(135deg, #111, #333) !important;
+    color: red !important;
+    animation: none !important;
+    transform: rotate(180deg) scale(0.8) !important;
+    box-shadow: 0 0 30px red !important;
+}
+
+@media (max-width: 520px) {
+    body {
+        align-items: flex-start;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .serguei-zone {
+        min-height: 210px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<main class="game">
+    <h1>Serguei Survivor</h1>
+    <p class="subtitle">Nourris Serguei avant qu’il ne devienne un administrateur général hainneux.</p>
+
+    <section class="stats">
+        <div class="card">
+            Score
+            <span id="score">0</span>
+        </div>
+        <div class="card">
+            Niveau
+            <span id="level">1</span>
+        </div>
+    </section>
+
+    <div class="bar-wrap">
+        <div id="hungerBar"></div>
+    </div>
+
+    <section class="serguei-zone">
+        <div id="serguei">Serguei</div>
+    </section>
+
+    <div class="actions">
+        <button onclick="feed()">🍔 Nourrir</button>
+        <button onclick="restart()">🔁 Recommencer</button>
+    </div>
+
+    <p id="message">Serguei spawn dans la vie. Mauvaise idée.</p>
+</main>
+
+<script>
+let hunger = 100;
+let score = 0;
+let level = 1;
+let size = 130;
+let alive = true;
+
+const serguei = document.getElementById("serguei");
+const hungerBar = document.getElementById("hungerBar");
+const scoreText = document.getElementById("score");
+const levelText = document.getElementById("level");
+const message = document.getElementById("message");
+
+const phrases = [
+    "Serguei mange un tacos cosmique.",
+    "Serguei absorbe une frite interdimensionnelle.",
+    "Serguei pense être un micro-ondes.",
+    "Serguei gagne +8 en absurdité.",
+    "Serguei parle couramment le kebab.",
+    "Serguei devient plus rond et plus suspect.",
+    "Serguei sent une présence dans la sauce algérienne."
+];
+
+function feed() {
+    if (!alive) return;
+
+    hunger = Math.min(100, hunger + 20);
+    score += 10;
+    size += 5;
+
+    if (score % 50 === 0) {
+        level++;
+        message.innerText = "🔥 Sergueï évolue. Personne n’était prêt.";
+    } else {
+        message.innerText = phrases[Math.floor(Math.random() * phrases.length)];
+    }
+
+    serguei.style.width = size + "px";
+    serguei.style.height = size + "px";
+    serguei.style.background = `linear-gradient(135deg, hsl(${Math.random()*360},100%,60%), hsl(${Math.random()*360},100%,55%))`;
+
+    updateUI();
+}
+
+function updateUI() {
+    hungerBar.style.width = hunger + "%";
+
+    if (hunger > 60) {
+        hungerBar.style.background = "linear-gradient(90deg, #00ff88, #d4ff00)";
+    } else if (hunger > 30) {
+        hungerBar.style.background = "linear-gradient(90deg, #ffe600, #ff8800)";
+    } else {
+        hungerBar.style.background = "linear-gradient(90deg, #ff003c, #ff7b00)";
+    }
+
+    scoreText.innerText = score;
+    levelText.innerText = level;
+}
+
+function die() {
+    alive = false;
+    hunger = 0;
+    serguei.classList.add("dead");
+    serguei.innerText = "X_X";
+    message.innerText = "💀 Sergueï est mort. Paix à son kebab.";
+    updateUI();
+}
+
+function restart() {
+    hunger = 100;
+    score = 0;
+    level = 1;
+    size = 130;
+    alive = true;
+
+    serguei.classList.remove("dead");
+    serguei.innerText = "Sergueï";
+    serguei.style.width = size + "px";
+    serguei.style.height = size + "px";
+    serguei.style.background = "linear-gradient(135deg, #ffb703, #fb5607)";
+    message.innerText = "Sergueï renaît. Il n’a rien appris.";
+
+    updateUI();
+}
+
+setInterval(() => {
+    if (!alive) return;
+
+    hunger -= 4 + level * 0.7;
+
+    if (hunger <= 0) {
+        die();
+    }
+
+    updateUI();
+}, 800);
+
+updateUI();
+</script>
+
+</body>
+</html>
