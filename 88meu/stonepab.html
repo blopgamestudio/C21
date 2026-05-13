@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STONE VS PABLO</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(116,0,0,.35),transparent 35%),
+    radial-gradient(circle at 20% 80%,rgba(0,90,40,.25),transparent 30%),
+    linear-gradient(135deg,#050607,#11170d 55%,#050607);
+  color:#f5f5f5;
+}
+
+.screen{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center,rgba(255,216,107,.08),transparent 40%),
+    rgba(0,0,0,.35);
+}
+
+.menu{
+  width:min(720px,92vw);
+  background:
+    linear-gradient(145deg,rgba(20,20,20,.96),rgba(5,5,5,.96));
+  border:2px solid #8f6a1f;
+  border-radius:26px;
+  padding:38px;
+  text-align:center;
+  box-shadow:
+    0 0 45px rgba(0,0,0,.9),
+    inset 0 0 35px rgba(255,216,107,.04);
+}
+
+h1{
+  margin:0 0 15px;
+  font-size:52px;
+  letter-spacing:4px;
+  color:#ffd86b;
+  text-shadow:
+    0 0 14px rgba(255,216,107,.45),
+    0 4px 0 #2a1600;
+}
+
+.menu p{
+  color:#bdbdbd;
+  font-size:18px;
+  line-height:1.5;
+}
+
+.choices{
+  display:flex;
+  justify-content:center;
+  gap:28px;
+  margin-top:35px;
+  flex-wrap:wrap;
+}
+
+.choice{
+  width:250px;
+  padding:28px;
+  border-radius:24px;
+  border:2px solid rgba(255,255,255,.08);
+  background:
+    linear-gradient(145deg,#1f1f1f,#0c0c0c);
+  cursor:pointer;
+  transition:.25s;
+  position:relative;
+  overflow:hidden;
+}
+
+.choice::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    linear-gradient(135deg,rgba(255,216,107,.08),transparent 40%);
+  opacity:0;
+  transition:.25s;
+}
+
+.choice:hover{
+  transform:translateY(-6px) scale(1.03);
+  border-color:#ffd86b;
+  box-shadow:
+    0 0 28px rgba(255,216,107,.18),
+    inset 0 0 18px rgba(255,216,107,.06);
+}
+
+.choice:hover::before{
+  opacity:1;
+}
+
+.avatar{
+  font-size:82px;
+  filter:drop-shadow(0 0 12px rgba(255,255,255,.15));
+}
+
+.name{
+  margin-top:15px;
+  font-size:32px;
+  font-weight:bold;
+  letter-spacing:2px;
+  color:#f7f7f7;
+}
+
+#game{
+  display:none;
+  width:100vw;
+  height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+#hud{
+  width:min(960px,95vw);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 22px;
+  margin-bottom:14px;
+  border-radius:18px;
+  background:
+    linear-gradient(145deg,rgba(20,20,20,.92),rgba(5,5,5,.92));
+  border:1px solid rgba(255,216,107,.2);
+  box-shadow:
+    0 0 22px rgba(0,0,0,.6),
+    inset 0 0 18px rgba(255,216,107,.04);
+  font-weight:bold;
+  backdrop-filter:blur(4px);
+}
+
+#hud div{
+  font-size:18px;
+  color:#f3f3f3;
+  text-shadow:0 0 10px rgba(255,255,255,.08);
+}
+
+#map{
+  position:relative;
+  width:min(960px,95vw);
+  height:min(640px,82vh);
+  overflow:hidden;
+  border-radius:14px;
+  border:3px solid #5e4515;
+  background:
+    radial-gradient(circle at 20% 20%,rgba(255,255,255,.04),transparent 12%),
+    radial-gradient(circle at 80% 30%,rgba(255,255,255,.03),transparent 14%),
+    linear-gradient(135deg,#162214,#0c120b 60%,#070807);
+  box-shadow:
+    inset 0 0 120px rgba(0,0,0,.85),
+    0 0 50px rgba(0,0,0,.9),
+    0 0 18px rgba(255,216,107,.08);
+}
+
+#map::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.015),
+      rgba(255,255,255,.015) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  mix-blend-mode:overlay;
+}
+
+.player,
+.npc,
+.tree,
+.flower{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  user-select:none;
+}
+
+.player,
+.npc{
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:27px;
+  border:2px solid rgba(255,255,255,.7);
+  z-index:5;
+}
+
+.player{
+  background:
+    radial-gradient(circle at 30% 30%,#5d8dff,#163db5);
+  box-shadow:
+    0 0 22px rgba(80,140,255,.65),
+    inset 0 0 12px rgba(255,255,255,.25);
+}
+
+.npc{
+  background:
+    radial-gradient(circle at 30% 30%,#ff6666,#9c1111);
+  box-shadow:
+    0 0 22px rgba(255,80,80,.55),
+    inset 0 0 12px rgba(255,255,255,.18);
+}
+
+.label{
+  position:absolute;
+  top:-30px;
+  left:50%;
+  transform:translateX(-50%);
+  padding:4px 10px;
+  border-radius:10px;
+  background:rgba(0,0,0,.7);
+  border:1px solid rgba(255,216,107,.2);
+  font-size:11px;
+  letter-spacing:1px;
+  white-space:nowrap;
+  color:#ffd86b;
+}
+
+.tree{
+  font-size:46px;
+  z-index:2;
+  filter:
+    drop-shadow(0 0 10px rgba(0,0,0,.8))
+    brightness(.7);
+}
+
+.flower{
+  font-size:30px;
+  z-index:3;
+  animation:pulse 1s infinite alternate;
+  filter:drop-shadow(0 0 8px rgba(255,255,255,.2));
+}
+
+@keyframes pulse{
+  from{
+    transform:translate(-50%,-50%) scale(1);
+  }
+  to{
+    transform:translate(-50%,-50%) scale(1.16);
+  }
+}
+
+#end{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.82);
+  backdrop-filter:blur(6px);
+  z-index:100;
+}
+
+.endbox{
+  width:min(620px,92vw);
+  padding:38px;
+  border-radius:26px;
+  text-align:center;
+  background:
+    linear-gradient(145deg,#151515,#050505);
+  border:2px solid #8f6a1f;
+  box-shadow:
+    0 0 50px rgba(0,0,0,.9),
+    inset 0 0 25px rgba(255,216,107,.05);
+}
+
+button{
+  margin-top:20px;
+  border:none;
+  padding:15px 28px;
+  border-radius:14px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  color:#1a1200;
+  background:
+    linear-gradient(145deg,#ffd86b,#c6921f);
+  transition:.2s;
+}
+
+button:hover{
+  transform:scale(1.05);
+  box-shadow:0 0 22px rgba(255,216,107,.45);
+}
+</style>
+</head>
+
+<body>
+
+<div id="start" class="screen">
+  <div class="menu">
+
+    <h1>STONE VS PABLO</h1>
+
+    <p>
+      Deux monsieurs très énervés dans une immense plaine sombre.<br>
+      Ramasse le plus de fleurs possible avant la fin du temps.
+    </p>
+
+    <div class="choices">
+
+      <div class="choice" onclick="startGame('STONE')">
+        <div class="avatar">😡</div>
+        <div class="name">STONE</div>
+      </div>
+
+      <div class="choice" onclick="startGame('PABLO')">
+        <div class="avatar">🤬</div>
+        <div class="name">PABLO</div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="game">
+
+  <div id="hud">
+    <div id="playerScore">Toi : 0 🌸</div>
+    <div id="timer">Temps : 60</div>
+    <div id="npcScore">Rival : 0 🌸</div>
+  </div>
+
+  <div id="map">
+
+    <div id="player" class="player">
+      <span class="label"></span>
+      <span id="playerFace"></span>
+    </div>
+
+    <div id="npc" class="npc">
+      <span class="label"></span>
+      <span id="npcFace"></span>
+    </div>
+
+  </div>
+
+</div>
+
+<div id="end">
+
+  <div class="endbox">
+
+    <h1 id="endTitle"></h1>
+
+    <p id="endText"></p>
+
+    <button onclick="location.reload()">
+      Rejouer
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+const map=document.getElementById("map");
+
+const playerEl=document.getElementById("player");
+const npcEl=document.getElementById("npc");
+
+const playerScoreEl=document.getElementById("playerScore");
+const npcScoreEl=document.getElementById("npcScore");
+const timerEl=document.getElementById("timer");
+
+let playerName="";
+let npcName="";
+
+let player={
+  x:120,
+  y:120,
+  score:0,
+  speed:4
+};
+
+let npc={
+  x:760,
+  y:480,
+  score:0,
+  speed:3.4
+};
+
+let flowers=[];
+let trees=[];
+let keys={};
+
+let timeLeft=60;
+let running=false;
+
+function startGame(name){
+
+  playerName=name;
+  npcName=name==="STONE"?"PABLO":"STONE";
+
+  document.getElementById("start").style.display="none";
+  document.getElementById("game").style.display="flex";
+
+  playerEl.querySelector(".label").textContent=playerName;
+  npcEl.querySelector(".label").textContent=npcName;
+
+  document.getElementById("playerFace").textContent=
+    playerName==="STONE"?"😡":"🤬";
+
+  document.getElementById("npcFace").textContent=
+    npcName==="STONE"?"😡":"🤬";
+
+  createTrees(8);
+  createFlowers(28);
+
+  running=true;
+
+  requestAnimationFrame(loop);
+
+  setInterval(()=>{
+
+    if(!running)return;
+
+    timeLeft--;
+
+    timerEl.textContent="Temps : "+timeLeft;
+
+    if(timeLeft<=0){
+      endGame();
+    }
+
+  },1000);
+}
+
+function mapSize(){
+  return{
+    w:map.clientWidth,
+    h:map.clientHeight
+  };
+}
+
+function rand(min,max){
+  return Math.random()*(max-min)+min;
+}
+
+function distance(a,b){
+  return Math.hypot(a.x-b.x,a.y-b.y);
+}
+
+function createTrees(count){
+
+  const size=mapSize();
+
+  for(let i=0;i<count;i++){
+
+    const el=document.createElement("div");
+
+    el.className="tree";
+    el.textContent="🌳";
+
+    const tree={
+      x:rand(70,size.w-70),
+      y:rand(70,size.h-70),
+      r:32,
+      el
+    };
+
+    el.style.left=tree.x+"px";
+    el.style.top=tree.y+"px";
+
+    trees.push(tree);
+
+    map.appendChild(el);
+  }
+}
+
+function createFlowers(count){
+
+  for(let i=0;i<count;i++){
+    spawnFlower();
+  }
+}
+
+function spawnFlower(){
+
+  const size=mapSize();
+
+  const el=document.createElement("div");
+
+  el.className="flower";
+
+  el.textContent=
+    ["🌸","🌼","🌺","🌻"][Math.floor(Math.random()*4)];
+
+  const flower={
+    x:rand(40,size.w-40),
+    y:rand(40,size.h-40),
+    el
+  };
+
+  el.style.left=flower.x+"px";
+  el.style.top=flower.y+"px";
+
+  flowers.push(flower);
+
+  map.appendChild(el);
+}
+
+function movePlayer(){
+
+  let dx=0;
+  let dy=0;
+
+  if(keys["z"]||keys["arrowup"])dy-=player.speed;
+  if(keys["s"]||keys["arrowdown"])dy+=player.speed;
+  if(keys["q"]||keys["arrowleft"])dx-=player.speed;
+  if(keys["d"]||keys["arrowright"])dx+=player.speed;
+
+  tryMove(player,dx,dy);
+}
+
+function moveNpc(){
+
+  if(!flowers.length)return;
+
+  let target=null;
+  let bestScore=Infinity;
+
+  flowers.forEach(f=>{
+
+    const dNpc=distance(npc,f);
+    const dPlayer=distance(player,f);
+
+    const score=dNpc-dPlayer*.45;
+
+    if(score<bestScore){
+
+      bestScore=score;
+      target=f;
+    }
+
+  });
+
+  let bestMove={
+    dx:0,
+    dy:0,
+    score:Infinity
+  };
+
+  for(let a=0;a<Math.PI*2;a+=Math.PI/12){
+
+    const dx=Math.cos(a)*npc.speed;
+    const dy=Math.sin(a)*npc.speed;
+
+    const test={
+      x:npc.x+dx,
+      y:npc.y+dy
+    };
+
+    let blocked=false;
+
+    for(const tree of trees){
+
+      if(distance(test,tree)<tree.r+20){
+
+        blocked=true;
+        break;
+      }
+    }
+
+    if(blocked)continue;
+
+    const size=mapSize();
+
+    if(
+      test.x<24||
+      test.y<24||
+      test.x>size.w-24||
+      test.y>size.h-24
+    ){
+      continue;
+    }
+
+    const targetDist=distance(test,target);
+    const playerDist=distance(test,player);
+
+    const score=
+      targetDist
+      -playerDist*.15
+      +Math.random()*5;
+
+    if(score<bestMove.score){
+
+      bestMove={
+        dx,
+        dy,
+        score
+      };
+    }
+  }
+
+  tryMove(npc,bestMove.dx,bestMove.dy);
+}
+
+function tryMove(entity,dx,dy){
+
+  const size=mapSize();
+
+  const oldX=entity.x;
+  const oldY=entity.y;
+
+  entity.x=Math.max(
+    24,
+    Math.min(size.w-24,entity.x+dx)
+  );
+
+  entity.y=Math.max(
+    24,
+    Math.min(size.h-24,entity.y+dy)
+  );
+
+  for(const tree of trees){
+
+    if(distance(entity,tree)<tree.r+16){
+
+      entity.x=oldX;
+      entity.y=oldY;
+
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function collectFlowers(entity,isPlayer){
+
+  for(let i=flowers.length-1;i>=0;i--){
+
+    if(distance(entity,flowers[i])<34){
+
+      flowers[i].el.remove();
+
+      flowers.splice(i,1);
+
+      entity.score++;
+
+      spawnFlower();
+
+      if(isPlayer){
+
+        playerScoreEl.textContent=
+          playerName+" : "+player.score+" 🌸";
+
+      }else{
+
+        npcScoreEl.textContent=
+          npcName+" : "+npc.score+" 🌸";
+      }
+    }
+  }
+}
+
+function render(){
+
+  playerEl.style.left=player.x+"px";
+  playerEl.style.top=player.y+"px";
+
+  npcEl.style.left=npc.x+"px";
+  npcEl.style.top=npc.y+"px";
+}
+
+function loop(){
+
+  if(!running)return;
+
+  movePlayer();
+  moveNpc();
+
+  collectFlowers(player,true);
+  collectFlowers(npc,false);
+
+  render();
+
+  requestAnimationFrame(loop);
+}
+
+function endGame(){
+
+  running=false;
+
+  const title=document.getElementById("endTitle");
+  const text=document.getElementById("endText");
+
+  if(player.score>npc.score){
+
+    title.textContent="VICTOIRE 🌸";
+
+    text.textContent=
+      playerName+
+      " est devenu heureux avec "+
+      player.score+
+      " fleurs.";
+
+  }else if(player.score<npc.score){
+
+    title.textContent="DÉFAITE 💀";
+
+    text.textContent=
+      npcName+
+      " t'a battu avec "+
+      npc.score+
+      " fleurs.";
+
+  }else{
+
+    title.textContent="ÉGALITÉ 😡";
+
+    text.textContent=
+      "Vous avez tous les deux "+
+      player.score+
+      " fleurs.";
+  }
+
+  document.getElementById("end").style.display="flex";
+}
+
+window.addEventListener("keydown",e=>{
+  keys[e.key.toLowerCase()]=true;
+});
+
+window.addEventListener("keyup",e=>{
+  keys[e.key.toLowerCase()]=false;
+});
+</script>
+
+</body>
+</html>
