@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Shift Command V3</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div>
+    <h1>NIGHT SHIFT COMMAND</h1>
+    <p>Directive Nocturne — Camp militaire cyberpunk autonome</p>
+  </div>
+  <button class="danger mini" onclick="resetGame()">Reset</button>
+</header>
+
+<section class="status">
+  <div class="res"><span>Crédits</span><strong id="credits">0</strong></div>
+  <div class="res"><span>Métal</span><strong id="metal">0</strong></div>
+  <div class="res"><span>Énergie</span><strong id="energy">0</strong></div>
+  <div class="res"><span>Data</span><strong id="data">0</strong></div>
+  <div class="res"><span>Rations</span><strong id="rations">0</strong></div>
+  <div class="res threat"><span>Menace</span><strong id="threat">0</strong></div>
+</section>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="overview">QG</button>
+  <button class="tab" data-tab="base">Base</button>
+  <button class="tab" data-tab="units">Unités</button>
+  <button class="tab" data-tab="missions">Missions</button>
+  <button class="tab" data-tab="sites">Sites</button>
+  <button class="tab" data-tab="tech">Tech</button>
+  <button class="tab" data-tab="log">Journal</button>
+</nav>
+
+<main>
+  <section id="overview" class="page active">
+    <article class="hero card">
+      <h2>Poste de nuit : Sergueï-7</h2>
+      <p>
+        Sous la pluie noire de Neon-Khark, le camp Bastion S-17 tient encore debout.
+        Les corpos, les gangs augmentés et les drones renégats rôdent autour de la zone.
+        Sergueï doit garder les écrans allumés, construire la base, exploiter les ruines
+        et envoyer les bonnes unités au combat.
+      </p>
+      <div class="line"></div>
+      <p>Temps de service : <strong id="playtime">00:00:00</strong></p>
+      <p>Puissance militaire : <strong id="power">0</strong></p>
+      <p>Niveau de commandement : <strong id="level">1</strong></p>
+      <div class="progress"><div id="xpbar"></div></div>
+    </article>
+
+    <section class="grid two">
+      <article class="card">
+        <h3>Objectifs actifs</h3>
+        <ul id="objectives"></ul>
+      </article>
+      <article class="card">
+        <h3>Rapport tactique</h3>
+        <p id="report"></p>
+      </article>
+    </section>
+  </section>
+
+  <section id="base" class="page">
+    <h2>Bâtiments du camp</h2>
+    <div id="buildings" class="grid"></div>
+  </section>
+
+  <section id="units" class="page">
+    <h2>Recrutement & Armée</h2>
+    <div class="card">
+      <p>Les unités consomment parfois des rations et servent aux missions. Certaines demandent des bâtiments ou technologies.</p>
+    </div>
+    <div id="unitsList" class="grid"></div>
+  </section>
+
+  <section id="missions" class="page">
+    <h2>Opérations nocturnes</h2>
+    <div class="card">
+      <p>Chaque mission compare ta puissance militaire à la difficulté ennemie. Les victoires donnent du butin, les échecs peuvent tuer des unités.</p>
+    </div>
+    <div id="missionsList" class="grid"></div>
+  </section>
+
+  <section id="sites" class="page">
+    <h2>Sites exploitables</h2>
+    <div class="card">
+      <p>Capture des sites autour du camp pour gagner des bonus permanents. Plus tu captures, plus la menace monte.</p>
+    </div>
+    <div id="sitesList" class="grid"></div>
+  </section>
+
+  <section id="tech" class="page">
+    <h2>Arbre technologique</h2>
+    <div id="techList" class="grid"></div>
+  </section>
+
+  <section id="log" class="page">
+    <h2>Journal de commandement</h2>
+    <div class="card">
+      <div id="logBox" class="log"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Sauvegarde locale automatique — jouable hors-ligne après chargement.
+</footer>
+
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
