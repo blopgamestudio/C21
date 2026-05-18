@@ -1,0 +1,234 @@
+:root{
+  --bg:#05070d;
+  --panel:#0d1424;
+  --panel2:#121b31;
+  --line:rgba(0,238,255,.28);
+  --cyan:#00eeff;
+  --pink:#ff2edf;
+  --green:#55ff99;
+  --yellow:#ffd166;
+  --red:#ff4d5f;
+  --text:#edfaff;
+  --muted:#8fa8bd;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(0,238,255,.18), transparent 28%),
+    radial-gradient(circle at 85% 10%, rgba(255,46,223,.12), transparent 30%),
+    linear-gradient(135deg,#04060b,#08101e 55%,#12071a);
+  color:var(--text);
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:14px;
+  border-bottom:1px solid var(--line);
+  background:rgba(4,7,13,.94);
+  backdrop-filter:blur(10px);
+}
+
+h1{
+  margin:0;
+  color:var(--cyan);
+  font-size:22px;
+  letter-spacing:2px;
+  text-shadow:0 0 14px rgba(0,238,255,.8);
+}
+
+h2,h3{color:var(--cyan); margin-top:0}
+p,li{color:var(--muted); line-height:1.45}
+strong{color:var(--green)}
+
+.topbar p{
+  margin:3px 0 0;
+  font-size:12px;
+}
+
+.status{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  padding:10px;
+}
+
+.res{
+  background:rgba(13,20,36,.94);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px;
+  box-shadow:0 0 18px rgba(0,238,255,.06);
+}
+
+.res span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.res strong{
+  display:block;
+  font-size:19px;
+  margin-top:3px;
+}
+
+.threat strong{color:var(--red)}
+
+.tabs{
+  display:flex;
+  overflow-x:auto;
+  gap:7px;
+  padding:8px 10px;
+  border-top:1px solid rgba(255,255,255,.05);
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.tab,.mini,button{
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(135deg,#101b31,#211333);
+  color:white;
+  border-radius:11px;
+  padding:10px 12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.tab{
+  min-width:102px;
+}
+
+.tab.active{
+  color:var(--cyan);
+  border-color:var(--cyan);
+  box-shadow:0 0 14px rgba(0,238,255,.22);
+}
+
+button:disabled{
+  opacity:.35;
+  cursor:not-allowed;
+}
+
+button:active{transform:scale(.98)}
+
+.danger{
+  background:linear-gradient(135deg,#35111a,#451020);
+  color:#ffdce1;
+}
+
+main{
+  padding:12px;
+  padding-bottom:70px;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.card{
+  background:rgba(13,20,36,.92);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:15px;
+  margin-bottom:12px;
+  box-shadow:0 0 24px rgba(0,238,255,.06);
+}
+
+.hero{
+  border-color:rgba(255,46,223,.36);
+  background:
+    linear-gradient(135deg,rgba(0,238,255,.08),rgba(255,46,223,.06)),
+    rgba(13,20,36,.94);
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+}
+
+.line{
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+  margin:12px 0;
+}
+
+.price{
+  font-size:13px;
+  color:var(--yellow);
+}
+
+.bad{color:var(--red)}
+.good{color:var(--green)}
+.pink{color:var(--pink)}
+.yellow{color:var(--yellow)}
+
+.progress{
+  height:11px;
+  width:100%;
+  border:1px solid rgba(255,255,255,.15);
+  background:#05070d;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+#xpbar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--cyan),var(--pink));
+}
+
+.log{
+  max-height:520px;
+  overflow:auto;
+}
+
+.log p{
+  border-bottom:1px solid rgba(255,255,255,.07);
+  margin:0;
+  padding:9px 0;
+  font-size:13px;
+}
+
+.badge{
+  display:inline-block;
+  padding:3px 7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--cyan);
+  font-size:11px;
+  margin-right:4px;
+}
+
+footer{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:rgba(4,7,13,.96);
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  padding:10px;
+  text-align:center;
+  font-size:12px;
+}
+
+@media(min-width:720px){
+  .status{grid-template-columns:repeat(6,1fr)}
+  main{max-width:1180px;margin:auto}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .grid.two{grid-template-columns:1fr 1fr}
+}
+
+@media(min-width:1050px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .grid.two{grid-template-columns:1fr 1fr}
+}
